@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static hello.moviebook.User.Auth.USER;
+
 import java.util.List;
 
 @Entity
@@ -32,6 +34,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "auth")
+    private Auth auth;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserMovie> userMovieList;
 
@@ -44,5 +49,6 @@ public class User {
         this.password = password;
         this.userName = userName;
         this.email = email;
+        this.auth = USER;
     }
 }
