@@ -3,9 +3,12 @@ package hello.moviebook.User;
 import hello.moviebook.UserBook.UserBook;
 import hello.moviebook.UserMovie.UserMovie;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import static hello.moviebook.User.Auth.USER;
 
 import java.util.List;
 
@@ -31,10 +34,21 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "auth")
+    private Auth auth;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserMovie> userMovieList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserBook> userBookList;
 
+    @Builder
+    public User(String id, String password, String userName, String email) {
+        this.id = id;
+        this.password = password;
+        this.userName = userName;
+        this.email = email;
+        this.auth = USER;
+    }
 }
