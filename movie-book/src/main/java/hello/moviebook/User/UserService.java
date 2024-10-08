@@ -111,4 +111,34 @@ public class UserService {
         redisTemplate.opsForValue()
                 .set(PREFIX_LOGOUT_REFRESH + id, refreshToken, Duration.ofSeconds(refreshExpiration.getTime() - new Date().getTime()));
     }
+
+    public String getUserId(FindIdReq findIdReq) {
+        // 이메일로 유저 검색
+         User findUser = userRepository.findUserByEmail(findIdReq.getEmail());
+
+         // 존재하지 않는 유저인 경우
+         if (findUser == null)
+             return (null);
+
+         return (findUser.getId());
+    }
+
+    public User resetPassword(FindPwReq findPwReq) {
+        // 아이디로 유저 검색
+         User findUser = userRepository.findUserById(findPwReq.getId());
+
+         // 존재하지 않는 유저인 경우
+         if (findUser == null)
+             return (null);
+
+         // 비밀번호, 비밀번호 확인이 일치하지 않는 경우
+         if (!findPwReq.getPassword().equals(findPwReq.getRePassword()))
+             return (null);
+
+         // 비밀번호 재설정
+         findUser.setPassword(passwordEncoder.encode(findUser.getPassword()));
+         userRepository.save(findUser);
+
+         return (findUser);
+    }
 }

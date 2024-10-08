@@ -29,7 +29,7 @@ public class UserController {
         if (saveUser == null)
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 유저 정보입니다.");
 
-        return ResponseEntity.status(HttpStatus.OK).body(saveUser.getId() + "님 회원가입에 성공했습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(saveUser.getUserName() + "님 회원가입에 성공했습니다.");
     }
 
     // 로그인 API
@@ -59,6 +59,31 @@ public class UserController {
         // 로그아웃 처리
         userService.logout(request, principal.getName());
 
-        return ResponseEntity.status(HttpStatus.OK).body(principal.getName() + "님 로그아웃 처리되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body("로그아웃 처리되었습니다.");
+    }
+
+    // 아이디 찾기 API
+    @GetMapping("/find-id")
+    public ResponseEntity<String> findUserId(@RequestBody FindIdReq findIdReq) {
+
+        String findId = userService.getUserId(findIdReq);
+
+        if (findId == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
+
+        return ResponseEntity.status(HttpStatus.OK).body(findIdReq.getUserName() + "님의 아이디는\n" + findId + "입니다.");
+    }
+
+    // 비밀번호 찾기 API
+    @GetMapping("/reset-pw")
+    public ResponseEntity<String> resetUserPw(@RequestBody FindPwReq findPwReq) {
+
+        // 재설정한 비밀번호
+        User findUser = userService.resetPassword(findPwReq);
+
+        if (findUser == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("올바르지 않은 정보입니다.");
+
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호를 재설정했습니다.");
     }
 }
