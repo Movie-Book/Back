@@ -86,4 +86,11 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호를 재설정했습니다.");
     }
+
+    // 로그인 API 테스트
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+
+        return ResponseEntity.status(HttpStatus.OK).body("test");
+    }
 }

@@ -136,7 +136,7 @@ public class UserService {
              return (null);
 
          // 비밀번호 재설정
-         findUser.setPassword(passwordEncoder.encode(findUser.getPassword()));
+         findUser.setPassword(passwordEncoder.encode(findPwReq.getPassword()));
          userRepository.save(findUser);
 
          return (findUser);

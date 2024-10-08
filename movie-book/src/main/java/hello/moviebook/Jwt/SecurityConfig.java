@@ -37,7 +37,7 @@ public class SecurityConfig {
         // 메서드 권한 설정
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/user/join", "/user/login",
-                                "/user/find-id", "/user/find-pw"
+                                "/user/find-id", "/user/reset-pw"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthFilter(jwtService),
