@@ -2,12 +2,17 @@ package hello.moviebook.User;
 
 import hello.moviebook.Jwt.JwtService;
 import hello.moviebook.Jwt.TokenDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +24,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtService jwtService;
+
+    private final StringRedisTemplate redisTemplate;
+
+    private final String PREFIX_LOGOUT = "LOGOUT:";
+    private final String PREFIX_LOGOUT_REFRESH = "LOGOUT_REFRESH:";
 
     @Transactional
     // 회원가입 API - 유저 생성
@@ -47,6 +57,26 @@ public class UserService {
     }
 
     @Transactional
+    // 응답 헤더에 토큰 정보 세팅
+    public TokenDTO setTokenInHeader(User loginUser, HttpServletResponse response) {
+
+        // 토큰 생성
+        TokenDTO loginToken = jwtService.generateToken(loginUser);
+
+        // 액세스 토큰 발급
+        log.info("Id = {}, password = {}", loginUser.getId(), loginUser.getPassword());
+        log.info("accessToken = {}, refreshToken = {}", loginToken.getAccessToken(), loginToken.getRefreshToken());
+
+        // Header에 정보 넘겨주기
+        response.setHeader("UserId", loginUser.getId());
+        response.setHeader("TokenType", "Bearer");
+        response.setHeader("AccessToken", loginToken.getAccessToken());
+        response.setHeader("RefreshToken", loginToken.getRefreshToken());
+
+        return (loginToken);
+    }
+
+    @Transactional
     // 로그인 API
     public TokenDTO login(UserLoginReq loginReq, HttpServletResponse response) {
 
@@ -66,21 +96,19 @@ public class UserService {
     }
 
     @Transactional
-    public TokenDTO setTokenInHeader(User loginUser, HttpServletResponse response) {
+    public void logout(HttpServletRequest request, String id) {
+        // 토큰 정보
+        String accessToken = jwtService.resolveAccessToken(request);
+        String refreshToken = jwtService.resolveRefreshToken(request);
 
-        // 토큰 생성
-        TokenDTO loginToken = jwtService.generateToken(loginUser);
+        // 토큰 만료 기한
+        Date accessExpiration = jwtService.parseClaims(accessToken).getExpiration();
+        Date refreshExpiration = jwtService.parseClaims(refreshToken).getExpiration();
 
-        // 액세스 토큰 발급
-        log.info("Id = {}, password = {}", loginUser.getId(), loginUser.getPassword());
-        log.info("accessToken = {}, refreshToken = {}", loginToken.getAccessToken(), loginToken.getRefreshToken());
-
-        // Header에 정보 넘겨주기
-        response.setHeader("UserId", loginUser.getId());
-        response.setHeader("TokenType", "Bearer");
-        response.setHeader("AccessToken", loginToken.getAccessToken());
-        response.setHeader("RefreshToken", loginToken.getRefreshToken());
-
-        return (loginToken);
+        // 남은 만료 기한 동안 블랙리스트 처리
+        redisTemplate.opsForValue()
+                .set(PREFIX_LOGOUT + id, accessToken, Duration.ofSeconds(accessExpiration.getTime() - new Date().getTime()));
+        redisTemplate.opsForValue()
+                .set(PREFIX_LOGOUT_REFRESH + id, refreshToken, Duration.ofSeconds(refreshExpiration.getTime() - new Date().getTime()));
     }
 }

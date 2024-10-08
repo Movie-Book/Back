@@ -1,10 +1,12 @@
 package hello.moviebook.User;
 
 import hello.moviebook.Jwt.TokenDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +29,7 @@ public class UserController {
         if (saveUser == null)
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 유저 정보입니다.");
 
-        return ResponseEntity.status(HttpStatus.OK).body(saveUser.getUserName() + "님 회원가입에 성공했습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(saveUser.getId() + "님 회원가입에 성공했습니다.");
     }
 
     // 로그인 API
@@ -45,5 +47,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 
         return ResponseEntity.status(HttpStatus.OK).body(loginToken);
+    }
+
+    // 로그아웃 API
+    @PostMapping("/logout")
+    public ResponseEntity<String> userLogout(Authentication principal, HttpServletRequest request) {
+
+        if (principal == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        // 로그아웃 처리
+        userService.logout(request, principal.getName());
+
+        return ResponseEntity.status(HttpStatus.OK).body(principal.getName() + "님 로그아웃 처리되었습니다.");
     }
 }
