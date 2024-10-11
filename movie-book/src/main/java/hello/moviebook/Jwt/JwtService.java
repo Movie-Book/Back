@@ -82,17 +82,23 @@ public class JwtService {
         // Refresh Token 생성
         String refreshToken = createRefreshToken(loginUser.getId());
 
+        // RefreshToken 만료 기한 설정
+        Date refreshExpiration = parseClaims(refreshToken).getExpiration();
+        redisTemplate.opsForValue()
+                .set(PREFIX_REFRESH + accessToken, refreshToken, Duration.ofSeconds(refreshExpiration.getTime() - new Date().getTime()));
+
+        log.info("refreshToken : {}", redisTemplate.opsForValue().get(PREFIX_REFRESH + accessToken));
+
         return TokenDTO.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .userNumber(loginUser.getUserNumber())
                 .build();
     }
 
     // Request Header에서 액세스 토큰 정보 추출
     public String resolveAccessToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Access");
+        String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
             return bearerToken.substring(7);
         }
@@ -100,8 +106,8 @@ public class JwtService {
     }
 
     // Request Header에서 리프레쉬 토큰 정보 추출
-    public String resolveRefreshToken(HttpServletRequest request) {
-        String refreshToken = request.getHeader("Refresh");
+    public String resolveRefreshToken(String id) {
+        String refreshToken = redisTemplate.opsForValue().get(PREFIX_REFRESH + id);
         if (StringUtils.hasText(refreshToken)) {
             return refreshToken;
         }
@@ -175,20 +181,19 @@ public class JwtService {
     // db에 저장되어 있는 token과 비교
     // db에 저장한다는 것이 jwt token을 사용한다는 강점을 상쇄시킨다.
     // db 보다는 redis를 사용하는 것이 더욱 좋다. (in-memory db기 때문에 조회속도가 빠르고 주기적으로 삭제하는 기능이 기본적으로 존재합니다.)
-    public boolean refreshTokenValidation(String token, String email) {
-        String logoutRefresh = redisTemplate.opsForValue().get(PREFIX_LOGOUT_REFRESH + email);
+    public boolean refreshTokenValidation(String accessToken, String id) {
+        String logoutRefresh = redisTemplate.opsForValue().get(PREFIX_LOGOUT_REFRESH + accessToken);
 
-        log.info("제공된 토큰: {}", token);
         log.info("로그아웃된 토큰: {}", logoutRefresh);
 
-        if (token.equals(logoutRefresh)) {
+        if (logoutRefresh != null) {
             log.info("로그아웃 처리된 리프레쉬 토큰입니다.");
             return false;
         }
 
-        String searchRefresh = redisTemplate.opsForValue().get(PREFIX_REFRESH + email);
+        String searchRefresh = redisTemplate.opsForValue().get(PREFIX_REFRESH + accessToken);
 
         // DB에 저장한 토큰 비교
-        return token.equals(searchRefresh);
+        return searchRefresh != null;
     }
 }

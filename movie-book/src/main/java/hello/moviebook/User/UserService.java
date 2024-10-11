@@ -2,7 +2,6 @@ package hello.moviebook.User;
 
 import hello.moviebook.Jwt.JwtService;
 import hello.moviebook.Jwt.TokenDTO;
-import hello.moviebook.User.DTO.FindIdReq;
 import hello.moviebook.User.DTO.FindPwReq;
 import hello.moviebook.User.DTO.UserJoinReq;
 import hello.moviebook.User.DTO.UserLoginReq;
@@ -39,12 +38,16 @@ public class UserService {
     public User createUser(UserJoinReq joinReq) {
 
         // 유저 아이디 중복
-        if (userRepository.existsById(joinReq.getId()))
+        if (userRepository.existsById(joinReq.getId())){
+            log.info("회원가입 : 중복된 아이디");
             return (null);
+        }
 
         // 유저 이메일 중복
-        if (userRepository.existsByEmail(joinReq.getEmail()))
+        if (userRepository.existsByEmail(joinReq.getEmail())) {
+            log.info("회원가입 : 중복된 이메일");
             return (null);
+        }
 
         // 유저 정보 생성
         User newUser = User.builder()
@@ -64,18 +67,17 @@ public class UserService {
     // 응답 헤더에 토큰 정보 세팅
     public TokenDTO setTokenInHeader(User loginUser, HttpServletResponse response) {
 
-        // 토큰 생성
+        // 토큰 생성 및 리프레쉬 토큰 redis 저장
         TokenDTO loginToken = jwtService.generateToken(loginUser);
 
         // 액세스 토큰 발급
         log.info("Id = {}, password = {}", loginUser.getId(), loginUser.getPassword());
-        log.info("accessToken = {}, refreshToken = {}", loginToken.getAccessToken(), loginToken.getRefreshToken());
+        log.info("accessToken = {}", loginToken.getAccessToken());
 
         // Header에 정보 넘겨주기
         response.setHeader("UserId", loginUser.getId());
         response.setHeader("TokenType", "Bearer");
         response.setHeader("AccessToken", loginToken.getAccessToken());
-        response.setHeader("RefreshToken", loginToken.getRefreshToken());
 
         return (loginToken);
     }
@@ -103,7 +105,9 @@ public class UserService {
     public void logout(HttpServletRequest request, String id) {
         // 토큰 정보
         String accessToken = jwtService.resolveAccessToken(request);
-        String refreshToken = jwtService.resolveRefreshToken(request);
+        String refreshToken = jwtService.resolveRefreshToken(id);
+
+        log.info("refreshToken : {}", refreshToken);
 
         // 토큰 만료 기한
         Date accessExpiration = jwtService.parseClaims(accessToken).getExpiration();
@@ -113,18 +117,23 @@ public class UserService {
         redisTemplate.opsForValue()
                 .set(PREFIX_LOGOUT + id, accessToken, Duration.ofSeconds(accessExpiration.getTime() - new Date().getTime()));
         redisTemplate.opsForValue()
-                .set(PREFIX_LOGOUT_REFRESH + id, refreshToken, Duration.ofSeconds(refreshExpiration.getTime() - new Date().getTime()));
+                .set(PREFIX_LOGOUT_REFRESH + accessToken, refreshToken, Duration.ofSeconds(refreshExpiration.getTime() - new Date().getTime()));
     }
 
-    public String getUserId(FindIdReq findIdReq) {
+    public String getUserId(String userName, String email) {
         // 이메일로 유저 검색
-         User findUser = userRepository.findUserByEmail(findIdReq.getEmail());
+         User nameUser = userRepository.findUserByUserName(userName);
+         User emailUser = userRepository.findUserByEmail(email);
 
          // 존재하지 않는 유저인 경우
-         if (findUser == null)
+         if (nameUser == null || emailUser == null)
              return (null);
 
-         return (findUser.getId());
+         // 정보가 일치하지 않는 경우
+         if (nameUser != emailUser)
+             return (null);
+
+         return (nameUser.getId());
     }
 
     public User resetPassword(FindPwReq findPwReq) {
