@@ -36,10 +36,9 @@ public class SecurityConfig {
 
         // 메서드 권한 설정
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/user/join", "/user/login",
-                                "/user/find-id", "/user/reset-pw",
-                                "/movie/tmdb-korea/{page}", "/movie/tmdb-update-en",
-                                "/movie/set-keyword"
+                        .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**", // swagger 관련
+                                "/user/join", "/user/login", "/user/find-id", "/user/reset-pw",
+                                "/movie/tmdb-korea/{page}", "/movie/tmdb-update-en", "/movie/set-keyword"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthFilter(jwtService),
