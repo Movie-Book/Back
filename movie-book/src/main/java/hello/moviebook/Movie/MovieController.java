@@ -1,9 +1,8 @@
 package hello.moviebook.Movie;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/movie")
 public class MovieController {
 
