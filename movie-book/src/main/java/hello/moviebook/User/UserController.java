@@ -1,6 +1,10 @@
 package hello.moviebook.User;
 
 import hello.moviebook.Jwt.TokenDTO;
+import hello.moviebook.User.DTO.FindIdReq;
+import hello.moviebook.User.DTO.FindPwReq;
+import hello.moviebook.User.DTO.UserJoinReq;
+import hello.moviebook.User.DTO.UserLoginReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
