@@ -3,8 +3,11 @@ package hello.moviebook.User;
 import hello.moviebook.Jwt.JwtService;
 import hello.moviebook.Jwt.TokenDTO;
 import hello.moviebook.User.DTO.FindPwReq;
+import hello.moviebook.User.DTO.UserGenreReq;
 import hello.moviebook.User.DTO.UserJoinReq;
 import hello.moviebook.User.DTO.UserLoginReq;
+import hello.moviebook.UserGenre.UserGenre;
+import hello.moviebook.UserGenre.UserGenreRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,8 @@ import java.util.Date;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final UserGenreRepository userGenreRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -153,5 +158,33 @@ public class UserService {
          userRepository.save(findUser);
 
          return (findUser);
+    }
+
+    public UserGenre updateUserPreferredGenre(String userId, UserGenreReq userGenreReq) {
+        User user = userRepository.findUserById(userId);
+        UserGenre saveUserGenre = new UserGenre();
+
+        if (user == null)
+            return null;
+
+        // 유저 정보 설정
+        saveUserGenre.setUser(user);
+
+        // 유저 취향 장르 정보 설정
+        saveUserGenre.setAction(userGenreReq.getAction() != null ? userGenreReq.getAction() : false);
+        saveUserGenre.setDrama(userGenreReq.getDrama() != null ? userGenreReq.getDrama() : false);
+        saveUserGenre.setComedy(userGenreReq.getComedy() != null ? userGenreReq.getComedy() : false);
+        saveUserGenre.setRomance(userGenreReq.getRomance() != null ? userGenreReq.getRomance() : false);
+        saveUserGenre.setThriller(userGenreReq.getThriller() != null ? userGenreReq.getThriller() : false);
+        saveUserGenre.setHorror(userGenreReq.getHorror() != null ? userGenreReq.getHorror() : false);
+        saveUserGenre.setSf(userGenreReq.getSf() != null ? userGenreReq.getSf() : false);
+        saveUserGenre.setFantasy(userGenreReq.getFantasy() != null ? userGenreReq.getFantasy() : false);
+        saveUserGenre.setAnimation(userGenreReq.getAnimation() != null ? userGenreReq.getAnimation() : false);
+        saveUserGenre.setDocumentary(userGenreReq.getDocumentary() != null ? userGenreReq.getDocumentary() : false);
+        saveUserGenre.setCrime(userGenreReq.getCrime() != null ? userGenreReq.getCrime() : false);
+
+       userGenreRepository.save(saveUserGenre);
+
+       return saveUserGenre;
     }
 }

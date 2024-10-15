@@ -1,6 +1,7 @@
 package hello.moviebook.User;
 
 import hello.moviebook.UserBook.UserBook;
+import hello.moviebook.UserGenre.UserGenre;
 import hello.moviebook.UserMovie.UserMovie;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -42,6 +43,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserBook> userBookList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserGenre> userGenreList;
 
     @Builder
     public User(String id, String password, String userName, String email) {
