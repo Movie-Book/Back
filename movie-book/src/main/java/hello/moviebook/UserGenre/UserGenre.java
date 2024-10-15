@@ -2,11 +2,12 @@ package hello.moviebook.UserGenre;
 
 import hello.moviebook.User.User;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Table(name = "user_genre")
-@Setter
+@Setter @Getter
 public class UserGenre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

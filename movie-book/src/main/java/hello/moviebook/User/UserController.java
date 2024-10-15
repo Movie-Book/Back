@@ -147,7 +147,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 취향 장르 정보를 저장했습니다.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "409", description = "존재하지 않는 유저입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 유저입니다.", content = @Content(mediaType = "application/json")),
     })
     public ResponseEntity<String> userPreferredGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq) {
         if (principal == null)
@@ -155,7 +155,7 @@ public class UserController {
 
         UserGenre userGenre = userService.updateUserPreferredGenre(principal.getName(), userGenreReq);
         if (userGenre == null)
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("존재하지 않는 유저입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
 
         return ResponseEntity.status(HttpStatus.OK).body("유저 취향 장르 정보를 저장했습니다.");
     }

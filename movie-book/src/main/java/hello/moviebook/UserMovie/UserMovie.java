@@ -4,11 +4,13 @@ import hello.moviebook.Movie.Movie;
 import hello.moviebook.User.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "user_movie")
 @Getter @Setter
+@NoArgsConstructor
 public class UserMovie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +25,12 @@ public class UserMovie {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "movie_number")
+    @JoinColumn(name = "movie_id")
     private Movie movie;
+
+    public UserMovie(User user, Movie movie, Double movieRating) {
+        this.user = user;
+        this.movie = movie;
+        this.movieRating = movieRating;
+    }
 }
