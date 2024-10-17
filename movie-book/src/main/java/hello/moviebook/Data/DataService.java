@@ -1,6 +1,9 @@
 package hello.moviebook.Data;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hello.moviebook.Book.Book;
+import hello.moviebook.Book.BookRepository;
 import hello.moviebook.Movie.Movie;
 import hello.moviebook.Movie.MovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ import java.util.List;
 public class DataService {
 
     private final MovieRepository movieRepository;
+    private final BookRepository bookRepository;
     private final String tmdbURL = "https://api.themoviedb.org/3/movie/";
     private final String imageURL = "https://image.tmdb.org/t/p/w400";
 
@@ -35,6 +39,48 @@ public class DataService {
 
     private final String tmdbOption = "?language=ko-kr";
 
+    // books_data.json 파일을 읽고 데이터베이스에 저장하는 메서드
+    public void saveBooksFromJson(String filePath) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // JSON 파일에서 Book 리스트를 읽어들임
+            List<Book> books = objectMapper.readValue(new File(filePath), new TypeReference<List<Book>>() {});
+            Long cnt = 0L;
+
+            for (Book book : books) {
+                log.info("Description length: {} characters", book.getDescription().length());
+                if (isValidBook(book)) {
+                    bookRepository.save(book);
+                    log.info("Book : {}", book);
+                    cnt++;
+                }
+                log.info("Book : {}", book.getBookName());
+            }
+            log.info("Books inserted successfully into the database. count : {}", cnt);
+        } catch (IOException e) {
+            log.error("An error occurred while parsing and saving book data: ", e);
+        }
+    }
+
+
+    // 유효한 책인지 확인하는 메서드
+    private boolean isValidBook(Book book) {
+        if (book.getIsbn() == null || book.getBookName() == null || book.getDescription() == null ||
+                book.getAuthor() == null || book.getImage() == null || book.getPubDate() == null || book.getPublisher() == null) {
+            return false;
+        }
+
+        if (bookRepository.existsByIsbn(book.getIsbn())) {
+            return false;
+        }
+
+        if (book.getDescription().length() > 60000) {
+            log.info("Description too long: {} characters", book.getDescription().length());
+            book.setDescription(book.getDescription().substring(0, 60000)); // description을 60000자 제한
+        }
+
+        return true;
+    }
     public void getKoreaMovie(Long page) {
         for (int n = 0; n < 10; n++) {
             try {
@@ -182,6 +228,7 @@ public class DataService {
             e.printStackTrace();
         }
     }
+
 
     private List<String> parseJsonToStringList(String json) {
         // Replace curly braces and quotes, split by commas
