@@ -38,7 +38,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**", // swagger 관련
                                 "/user/join", "/user/login", "/user/find-id", "/user/reset-pw",
-                                "/movie/tmdb-korea/{page}", "/movie/tmdb-update-en", "/movie/set-keyword"
+                                "/movie/tmdb-korea/{page}", "/movie/tmdb-update-en", "/movie/set-keyword",
+                                "/translate", "data/kyobo"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthFilter(jwtService),

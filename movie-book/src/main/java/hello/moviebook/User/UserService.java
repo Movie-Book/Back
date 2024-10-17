@@ -3,8 +3,11 @@ package hello.moviebook.User;
 import hello.moviebook.Jwt.JwtService;
 import hello.moviebook.Jwt.TokenDTO;
 import hello.moviebook.User.DTO.FindPwReq;
+import hello.moviebook.User.DTO.UserGenreReq;
 import hello.moviebook.User.DTO.UserJoinReq;
 import hello.moviebook.User.DTO.UserLoginReq;
+import hello.moviebook.UserGenre.UserGenre;
+import hello.moviebook.UserGenre.UserGenreRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,8 @@ import java.util.Date;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final UserGenreRepository userGenreRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -58,7 +63,14 @@ public class UserService {
                 .email(joinReq.getEmail())
                 .build();
 
+        // 유저 정보 저장
         userRepository.save(newUser);
+
+        // 유저-장르 정보 생성
+        UserGenre newUserGenre = new UserGenre(newUser);
+
+        // 유저-장르 정보 저장
+        userGenreRepository.save(newUserGenre);
 
         return (newUser);
     }
@@ -153,5 +165,77 @@ public class UserService {
          userRepository.save(findUser);
 
          return (findUser);
+    }
+
+    public UserGenre updateUserPreferredGenre(String userId, UserGenreReq userGenreReq) {
+        User user = userRepository.findUserById(userId);
+        UserGenre userGenre = userGenreRepository.findUserGenreByUser(user);
+
+        if (user == null)
+            return null;
+
+        // 유저 취향 장르 정보 설정
+        if (userGenreReq.getAction())
+            userGenre.setAction(1L);
+        if (userGenreReq.getDrama())
+            userGenre.setDrama(1L);
+        if (userGenreReq.getComedy())
+            userGenre.setComedy(1L);
+        if (userGenreReq.getRomance())
+            userGenre.setRomance(1L);
+        if (userGenreReq.getThriller())
+            userGenre.setThriller(1L);
+        if (userGenreReq.getHorror())
+            userGenre.setHorror(1L);
+        if (userGenreReq.getSf())
+            userGenre.setSf(1L);
+        if (userGenreReq.getFantasy())
+            userGenre.setFantasy(1L);
+        if (userGenreReq.getAnimation())
+            userGenre.setAnimation(1L);
+        if (userGenreReq.getDocumentary())
+            userGenre.setDocumentary(1L);
+        if (userGenreReq.getCrime())
+            userGenre.setCrime(1L);
+
+       userGenreRepository.save(userGenre);
+
+       return userGenre;
+    }
+
+    public UserGenre updateUserDislikedGenre(String userId, UserGenreReq userGenreReq) {
+        User user = userRepository.findUserById(userId);
+        UserGenre userGenre = userGenreRepository.findUserGenreByUser(user);
+
+        if (user == null)
+            return null;
+
+        // 유저 취향 장르 정보 설정
+        if (userGenreReq.getAction())
+            userGenre.setAction(-1L);
+        if (userGenreReq.getDrama())
+            userGenre.setDrama(-1L);
+        if (userGenreReq.getComedy())
+            userGenre.setComedy(-1L);
+        if (userGenreReq.getRomance())
+            userGenre.setRomance(-1L);
+        if (userGenreReq.getThriller())
+            userGenre.setThriller(-1L);
+        if (userGenreReq.getHorror())
+            userGenre.setHorror(-1L);
+        if (userGenreReq.getSf())
+            userGenre.setSf(-1L);
+        if (userGenreReq.getFantasy())
+            userGenre.setFantasy(-1L);
+        if (userGenreReq.getAnimation())
+            userGenre.setAnimation(-1L);
+        if (userGenreReq.getDocumentary())
+            userGenre.setDocumentary(-1L);
+        if (userGenreReq.getCrime())
+            userGenre.setCrime(-1L);
+
+       userGenreRepository.save(userGenre);
+
+       return userGenre;
     }
 }

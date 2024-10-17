@@ -2,8 +2,10 @@ package hello.moviebook.User;
 
 import hello.moviebook.Jwt.TokenDTO;
 import hello.moviebook.User.DTO.FindPwReq;
+import hello.moviebook.User.DTO.UserGenreReq;
 import hello.moviebook.User.DTO.UserJoinReq;
 import hello.moviebook.User.DTO.UserLoginReq;
+import hello.moviebook.UserGenre.UserGenre;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -138,6 +140,42 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("올바르지 않은 정보입니다.");
 
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호를 재설정했습니다.");
+    }
+
+    @PatchMapping("/prefer-genre")
+    @Operation(summary = "유저 취향 - 영화 장르", description = "유저 영화 장르 선호도 조사 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 취향 장르 정보를 저장했습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 유저입니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<String> userPreferredGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq) {
+        if (principal == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없는 접근입니다.");
+
+        UserGenre userGenre = userService.updateUserPreferredGenre(principal.getName(), userGenreReq);
+        if (userGenre == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
+
+        return ResponseEntity.status(HttpStatus.OK).body("유저 취향 장르 정보를 저장했습니다.");
+    }
+
+    @PatchMapping("/dislike-genre")
+    @Operation(summary = "유저 취향 - 영화 장르", description = "유저 영화 장르 비선호도 조사 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 취향 장르 정보를 저장했습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 유저입니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<String> userDislikedGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq) {
+        if (principal == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없는 접근입니다.");
+
+        UserGenre userGenre = userService.updateUserDislikedGenre(principal.getName(), userGenreReq);
+        if (userGenre == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
+
+        return ResponseEntity.status(HttpStatus.OK).body("유저 취향 장르 정보를 저장했습니다.");
     }
 
     // 로그인 API 테스트

@@ -20,7 +20,7 @@ public class Book {
     private String isbn;
 
     @Column(name = "book_name")
-    @JsonProperty("title")
+    @JsonProperty("book_name")
     private String bookName;
 
     @Column(name = "publisher")
@@ -31,16 +31,17 @@ public class Book {
     @JsonProperty("author")
     private String author;
 
-    @Column(name = "description")
+    @Column(columnDefinition = "TEXT")
+    @Lob
     @JsonProperty("description")
     private String description;
 
     @Column(name = "image")
-    @JsonProperty("image")
+    @JsonProperty("image_url")
     private String image;
 
     @Column(name = "pub_date")
-    @JsonProperty("pubdate")
+    @JsonProperty("pub_date")
     private String pubDate;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
