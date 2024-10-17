@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/movie")
 @RequiredArgsConstructor
+@Tag(name = "Movie", description = "영화 관련 API")
 public class MovieController {
     private final MovieService movieService;
 
     // 유저 선호 장르 영화 조회 API
     @GetMapping("")
-    @Operation(summary = "유저 선호 장르 영화", description = "유저 선호 장르에 속하는 영화들을 화면에 표시하는 API")
+    @Operation(summary = "유저 선호 장르 영화", description = "유저 선호 장르에 속하고, 비선호 장르는 제외한 영화들을 화면에 표시하는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 선호 장르 영화 리스트.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
