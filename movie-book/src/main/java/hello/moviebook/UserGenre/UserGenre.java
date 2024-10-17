@@ -3,11 +3,13 @@ package hello.moviebook.UserGenre;
 import hello.moviebook.User.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "user_genre")
 @Setter @Getter
+@NoArgsConstructor
 public class UserGenre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,39 +17,54 @@ public class UserGenre {
     private Long userGenreNumber;
 
     @Column(name = "action", nullable = false)
-    private Boolean action;
+    private Long action;
 
     @Column(name = "drama", nullable = false)
-    private Boolean drama;
+    private Long drama;
 
     @Column(name = "comedy", nullable = false)
-    private Boolean comedy;
+    private Long comedy;
 
     @Column(name = "romance", nullable = false)
-    private Boolean romance;
+    private Long romance;
 
     @Column(name = "thriller", nullable = false)
-    private Boolean thriller;
+    private Long thriller;
 
     @Column(name = "horror", nullable = false)
-    private Boolean horror;
+    private Long horror;
 
     @Column(name = "sf", nullable = false)
-    private Boolean sf;
+    private Long sf;
 
     @Column(name = "fantasy", nullable = false)
-    private Boolean fantasy;
+    private Long fantasy;
 
     @Column(name = "animation", nullable = false)
-    private Boolean animation;
+    private Long animation;
 
     @Column(name = "documentary", nullable = false)
-    private Boolean documentary;
+    private Long documentary;
 
     @Column(name = "crime", nullable = false)
-    private Boolean crime;
+    private Long crime;
 
     @ManyToOne
     @JoinColumn(name = "user_number")
     private User user;
+
+    public UserGenre(User user) {
+        this.action = 0L;
+        this.drama = 0L;
+        this.comedy = 0L;
+        this.romance = 0L;
+        this.thriller = 0L;
+        this.horror = 0L;
+        this.sf = 0L;
+        this.fantasy = 0L;
+        this.animation = 0L;
+        this.documentary = 0L;
+        this.crime = 0L;
+        this.user = user;
+    }
 }
