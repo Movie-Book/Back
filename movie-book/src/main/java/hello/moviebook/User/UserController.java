@@ -142,7 +142,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호를 재설정했습니다.");
     }
 
-    @PostMapping("/prefer-genre")
+    @PatchMapping("/prefer-genre")
     @Operation(summary = "유저 취향 - 영화 장르", description = "유저 영화 장르 선호도 조사 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 취향 장르 정보를 저장했습니다.", content = @Content(mediaType = "application/json")),

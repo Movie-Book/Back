@@ -63,7 +63,14 @@ public class UserService {
                 .email(joinReq.getEmail())
                 .build();
 
+        // 유저 정보 저장
         userRepository.save(newUser);
+
+        // 유저-장르 정보 생성
+        UserGenre newUserGenre = new UserGenre(newUser);
+
+        // 유저-장르 정보 저장
+        userGenreRepository.save(newUserGenre);
 
         return (newUser);
     }
@@ -162,30 +169,38 @@ public class UserService {
 
     public UserGenre updateUserPreferredGenre(String userId, UserGenreReq userGenreReq) {
         User user = userRepository.findUserById(userId);
-        UserGenre saveUserGenre = new UserGenre();
+        UserGenre userGenre = userGenreRepository.findUserGenreByUser(user);
 
         if (user == null)
             return null;
 
-        // 유저 정보 설정
-        saveUserGenre.setUser(user);
-
         // 유저 취향 장르 정보 설정
-        saveUserGenre.setAction(userGenreReq.getAction() ? 1L : 0L);
-        saveUserGenre.setDrama(userGenreReq.getDrama() ? 1L : 0L);
-        saveUserGenre.setComedy(userGenreReq.getComedy() ? 1L : 0L);
-        saveUserGenre.setRomance(userGenreReq.getRomance() ? 1L : 0L);
-        saveUserGenre.setThriller(userGenreReq.getThriller() ? 1L : 0L);
-        saveUserGenre.setHorror(userGenreReq.getHorror() ? 1L : 0L);
-        saveUserGenre.setSf(userGenreReq.getSf() ? 1L : 0L);
-        saveUserGenre.setFantasy(userGenreReq.getFantasy() ? 1L : 0L);
-        saveUserGenre.setAnimation(userGenreReq.getAnimation() ? 1L : 0L);
-        saveUserGenre.setDocumentary(userGenreReq.getDocumentary() ? 1L : 0L);
-        saveUserGenre.setCrime(userGenreReq.getCrime() ? 1L : 0L);
+        if (userGenreReq.getAction())
+            userGenre.setAction(1L);
+        if (userGenreReq.getDrama())
+            userGenre.setDrama(1L);
+        if (userGenreReq.getComedy())
+            userGenre.setComedy(1L);
+        if (userGenreReq.getRomance())
+            userGenre.setRomance(1L);
+        if (userGenreReq.getThriller())
+            userGenre.setThriller(1L);
+        if (userGenreReq.getHorror())
+            userGenre.setHorror(1L);
+        if (userGenreReq.getSf())
+            userGenre.setSf(1L);
+        if (userGenreReq.getFantasy())
+            userGenre.setFantasy(1L);
+        if (userGenreReq.getAnimation())
+            userGenre.setAnimation(1L);
+        if (userGenreReq.getDocumentary())
+            userGenre.setDocumentary(1L);
+        if (userGenreReq.getCrime())
+            userGenre.setCrime(1L);
 
-       userGenreRepository.save(saveUserGenre);
+       userGenreRepository.save(userGenre);
 
-       return saveUserGenre;
+       return userGenre;
     }
 
     public UserGenre updateUserDislikedGenre(String userId, UserGenreReq userGenreReq) {

@@ -3,11 +3,13 @@ package hello.moviebook.UserGenre;
 import hello.moviebook.User.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "user_genre")
 @Setter @Getter
+@NoArgsConstructor
 public class UserGenre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,4 +52,19 @@ public class UserGenre {
     @ManyToOne
     @JoinColumn(name = "user_number")
     private User user;
+
+    public UserGenre(User user) {
+        this.action = 0L;
+        this.drama = 0L;
+        this.comedy = 0L;
+        this.romance = 0L;
+        this.thriller = 0L;
+        this.horror = 0L;
+        this.sf = 0L;
+        this.fantasy = 0L;
+        this.animation = 0L;
+        this.documentary = 0L;
+        this.crime = 0L;
+        this.user = user;
+    }
 }
