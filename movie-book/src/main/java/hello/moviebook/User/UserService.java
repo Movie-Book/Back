@@ -171,20 +171,56 @@ public class UserService {
         saveUserGenre.setUser(user);
 
         // 유저 취향 장르 정보 설정
-        saveUserGenre.setAction(userGenreReq.getAction() != null ? userGenreReq.getAction() : false);
-        saveUserGenre.setDrama(userGenreReq.getDrama() != null ? userGenreReq.getDrama() : false);
-        saveUserGenre.setComedy(userGenreReq.getComedy() != null ? userGenreReq.getComedy() : false);
-        saveUserGenre.setRomance(userGenreReq.getRomance() != null ? userGenreReq.getRomance() : false);
-        saveUserGenre.setThriller(userGenreReq.getThriller() != null ? userGenreReq.getThriller() : false);
-        saveUserGenre.setHorror(userGenreReq.getHorror() != null ? userGenreReq.getHorror() : false);
-        saveUserGenre.setSf(userGenreReq.getSf() != null ? userGenreReq.getSf() : false);
-        saveUserGenre.setFantasy(userGenreReq.getFantasy() != null ? userGenreReq.getFantasy() : false);
-        saveUserGenre.setAnimation(userGenreReq.getAnimation() != null ? userGenreReq.getAnimation() : false);
-        saveUserGenre.setDocumentary(userGenreReq.getDocumentary() != null ? userGenreReq.getDocumentary() : false);
-        saveUserGenre.setCrime(userGenreReq.getCrime() != null ? userGenreReq.getCrime() : false);
+        saveUserGenre.setAction(userGenreReq.getAction() ? 1L : 0L);
+        saveUserGenre.setDrama(userGenreReq.getDrama() ? 1L : 0L);
+        saveUserGenre.setComedy(userGenreReq.getComedy() ? 1L : 0L);
+        saveUserGenre.setRomance(userGenreReq.getRomance() ? 1L : 0L);
+        saveUserGenre.setThriller(userGenreReq.getThriller() ? 1L : 0L);
+        saveUserGenre.setHorror(userGenreReq.getHorror() ? 1L : 0L);
+        saveUserGenre.setSf(userGenreReq.getSf() ? 1L : 0L);
+        saveUserGenre.setFantasy(userGenreReq.getFantasy() ? 1L : 0L);
+        saveUserGenre.setAnimation(userGenreReq.getAnimation() ? 1L : 0L);
+        saveUserGenre.setDocumentary(userGenreReq.getDocumentary() ? 1L : 0L);
+        saveUserGenre.setCrime(userGenreReq.getCrime() ? 1L : 0L);
 
        userGenreRepository.save(saveUserGenre);
 
        return saveUserGenre;
+    }
+
+    public UserGenre updateUserDislikedGenre(String userId, UserGenreReq userGenreReq) {
+        User user = userRepository.findUserById(userId);
+        UserGenre userGenre = userGenreRepository.findUserGenreByUser(user);
+
+        if (user == null)
+            return null;
+
+        // 유저 취향 장르 정보 설정
+        if (userGenreReq.getAction())
+            userGenre.setAction(-1L);
+        if (userGenreReq.getDrama())
+            userGenre.setDrama(-1L);
+        if (userGenreReq.getComedy())
+            userGenre.setComedy(-1L);
+        if (userGenreReq.getRomance())
+            userGenre.setRomance(-1L);
+        if (userGenreReq.getThriller())
+            userGenre.setThriller(-1L);
+        if (userGenreReq.getHorror())
+            userGenre.setHorror(-1L);
+        if (userGenreReq.getSf())
+            userGenre.setSf(-1L);
+        if (userGenreReq.getFantasy())
+            userGenre.setFantasy(-1L);
+        if (userGenreReq.getAnimation())
+            userGenre.setAnimation(-1L);
+        if (userGenreReq.getDocumentary())
+            userGenre.setDocumentary(-1L);
+        if (userGenreReq.getCrime())
+            userGenre.setCrime(-1L);
+
+       userGenreRepository.save(userGenre);
+
+       return userGenre;
     }
 }
