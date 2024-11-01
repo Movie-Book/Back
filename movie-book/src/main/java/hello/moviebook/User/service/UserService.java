@@ -1,13 +1,15 @@
-package hello.moviebook.User;
+package hello.moviebook.user.service;
 
-import hello.moviebook.Jwt.JwtService;
-import hello.moviebook.Jwt.TokenDTO;
-import hello.moviebook.User.DTO.FindPwReq;
-import hello.moviebook.User.DTO.UserGenreReq;
-import hello.moviebook.User.DTO.UserJoinReq;
-import hello.moviebook.User.DTO.UserLoginReq;
-import hello.moviebook.UserGenre.UserGenre;
-import hello.moviebook.UserGenre.UserGenreRepository;
+import hello.moviebook.user.domain.User;
+import hello.moviebook.user.repository.UserRepository;
+import hello.moviebook.jwt.JwtService;
+import hello.moviebook.jwt.TokenDTO;
+import hello.moviebook.user.dto.FindPwReq;
+import hello.moviebook.user.dto.UserGenreReq;
+import hello.moviebook.user.dto.UserJoinReq;
+import hello.moviebook.user.dto.UserLoginReq;
+import hello.moviebook.movie.domain.UserGenre;
+import hello.moviebook.movie.repository.UserGenreRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

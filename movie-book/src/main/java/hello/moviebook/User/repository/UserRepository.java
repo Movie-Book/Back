@@ -1,5 +1,6 @@
-package hello.moviebook.User;
+package hello.moviebook.user.repository;
 
+import hello.moviebook.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

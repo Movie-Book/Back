@@ -1,15 +1,15 @@
-package hello.moviebook.User;
+package hello.moviebook.user.domain;
 
-import hello.moviebook.UserBook.UserBook;
-import hello.moviebook.UserGenre.UserGenre;
-import hello.moviebook.UserMovie.UserMovie;
+import hello.moviebook.book.domain.UserBook;
+import hello.moviebook.movie.domain.UserGenre;
+import hello.moviebook.movie.domain.UserMovie;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import static hello.moviebook.User.Auth.USER;
+import static hello.moviebook.user.domain.Auth.USER;
 
 import java.util.List;
 

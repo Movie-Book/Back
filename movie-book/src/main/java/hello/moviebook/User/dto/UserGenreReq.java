@@ -1,4 +1,4 @@
-package hello.moviebook.User.DTO;
+package hello.moviebook.user.dto;
 
 import lombok.Data;
 
