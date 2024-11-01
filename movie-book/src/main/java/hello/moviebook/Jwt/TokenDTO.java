@@ -1,4 +1,4 @@
-package hello.moviebook.Jwt;
+package hello.moviebook.jwt;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package hello.moviebook.Jwt;
+package hello.moviebook.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

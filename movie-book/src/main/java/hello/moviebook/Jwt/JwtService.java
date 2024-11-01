@@ -1,7 +1,7 @@
-package hello.moviebook.Jwt;
+package hello.moviebook.jwt;
 
-import hello.moviebook.User.User;
-import hello.moviebook.User.UserRepository;
+import hello.moviebook.user.domain.User;
+import hello.moviebook.user.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

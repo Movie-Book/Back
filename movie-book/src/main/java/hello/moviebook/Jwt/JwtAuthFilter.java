@@ -1,4 +1,4 @@
-package hello.moviebook.Jwt;
+package hello.moviebook.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
