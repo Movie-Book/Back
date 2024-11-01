@@ -1,5 +1,6 @@
-package hello.moviebook.Movie;
+package hello.moviebook.movie.repository;
 
+import hello.moviebook.movie.domain.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

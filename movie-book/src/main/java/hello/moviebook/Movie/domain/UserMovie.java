@@ -1,7 +1,6 @@
-package hello.moviebook.UserMovie;
+package hello.moviebook.movie.domain;
 
-import hello.moviebook.Movie.Movie;
-import hello.moviebook.User.User;
+import hello.moviebook.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

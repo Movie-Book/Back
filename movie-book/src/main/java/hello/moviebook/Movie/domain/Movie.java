@@ -1,8 +1,7 @@
-package hello.moviebook.Movie;
+package hello.moviebook.movie.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import hello.moviebook.UserMovie.UserMovie;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

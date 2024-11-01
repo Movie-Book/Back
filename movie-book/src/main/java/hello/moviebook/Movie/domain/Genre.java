@@ -1,4 +1,4 @@
-package hello.moviebook.Movie;
+package hello.moviebook.movie.domain;
 
 import jakarta.persistence.*;
 

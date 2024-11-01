@@ -1,13 +1,15 @@
-package hello.moviebook.Movie;
+package hello.moviebook.movie.service;
 
-import hello.moviebook.Movie.DTO.MovieInfoRes;
-import hello.moviebook.Movie.DTO.MovieRatingReq;
-import hello.moviebook.User.User;
-import hello.moviebook.User.UserRepository;
-import hello.moviebook.UserGenre.UserGenre;
-import hello.moviebook.UserGenre.UserGenreRepository;
-import hello.moviebook.UserMovie.UserMovie;
-import hello.moviebook.UserMovie.UserMovieRepository;
+import hello.moviebook.movie.repository.MovieRepository;
+import hello.moviebook.movie.repository.UserGenreRepository;
+import hello.moviebook.movie.repository.UserMovieRepository;
+import hello.moviebook.movie.domain.Movie;
+import hello.moviebook.movie.domain.UserGenre;
+import hello.moviebook.movie.domain.UserMovie;
+import hello.moviebook.movie.dto.MovieInfoRes;
+import hello.moviebook.movie.dto.MovieRatingReq;
+import hello.moviebook.user.domain.User;
+import hello.moviebook.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
