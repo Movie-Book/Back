@@ -1,11 +1,11 @@
-package hello.moviebook.Data;
+package hello.moviebook.data;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hello.moviebook.Book.Book;
-import hello.moviebook.Book.BookRepository;
-import hello.moviebook.Movie.Movie;
-import hello.moviebook.Movie.MovieRepository;
+import hello.moviebook.book.domain.Book;
+import hello.moviebook.book.repository.BookRepository;
+import hello.moviebook.movie.domain.Movie;
+import hello.moviebook.movie.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,12 +14,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +35,14 @@ public class DataService {
     private final BookRepository bookRepository;
     private final String tmdbURL = "https://api.themoviedb.org/3/movie/";
     private final String imageURL = "https://image.tmdb.org/t/p/w400";
-
     @Value("${tmdb.api-key}")
     private String tmdbKey;
-
     private final String tmdbOption = "?language=ko-kr";
+    private final String defaultURL = "https://openapi.naver.com/v1/search/book.json?";
+    private final String option = "display=100&sort=sim&";
+    private final String clientId = "luVmm20hRvg7dhaITaOy"; // 클라이언트 아이디
+    private final String clientSecret = "jjIk8pafab"; // 클라이언트 시크릿
+
 
     // books_data.json 파일을 읽고 데이터베이스에 저장하는 메서드
     public void saveBooksFromJson(String filePath) {
@@ -61,7 +66,6 @@ public class DataService {
             log.error("An error occurred while parsing and saving book data: ", e);
         }
     }
-
 
     // 유효한 책인지 확인하는 메서드
     private boolean isValidBook(Book book) {
@@ -413,5 +417,69 @@ public class DataService {
         }
         // 장소 리스트 DB에 저장
         movieRepository.saveAll(movieList);
+    }
+
+    // Book 데이터베이스 Insert
+    public void updateBookData(String keyword, List<Book> bookList) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        for (int i = 1; i <= 901; i+=100) {
+            try {
+                StringBuffer result = new StringBuffer();
+
+                String encodedQuery = URLEncoder.encode(keyword, StandardCharsets.UTF_8.toString());
+                String startNo = "&start=" + i;
+
+                // 도서 검색 api
+                URL bookUrl = new URL(defaultURL + option + "query=" + encodedQuery + startNo);
+                HttpURLConnection bookSearchUrlConnection = (HttpURLConnection) bookUrl.openConnection();
+                bookSearchUrlConnection.setRequestMethod("GET");
+                bookSearchUrlConnection.setRequestProperty("Content-type", "application/json");
+                bookSearchUrlConnection.setRequestProperty("X-Naver-Client-Id", clientId);
+                bookSearchUrlConnection.setRequestProperty("X-Naver-Client-Secret", clientSecret);
+
+                log.info(bookUrl.toString());
+
+                // BufferedReader로 응답을 UTF-8로 읽어오기
+                BufferedReader bf = new BufferedReader(new InputStreamReader(bookSearchUrlConnection.getInputStream(), StandardCharsets.UTF_8));
+
+                String line;
+                while ((line = bf.readLine()) != null) {
+                    result.append(line);
+                }
+
+                // JSON 파싱
+                JSONObject jsonResponse = new JSONObject(result.toString());
+                JSONArray items = jsonResponse.getJSONArray("items");
+
+                for (int j = 0; j < items.length(); j++) {
+                    JSONObject item = items.getJSONObject(j);
+                    Book book = objectMapper.readValue(item.toString(), Book.class);
+
+                    String isbn = book.getIsbn();
+                    String author = book.getAuthor();
+                    String bookName = book.getBookName();
+                    String description = book.getDescription();
+                    String publisher = book.getPublisher();
+
+                    if (isbn == null || author == null || bookName == null || description == null || publisher == null)
+                        continue;
+
+                    if (description.length() > 255) {
+                        book.setDescription(description.substring(0, 255));
+                    }
+
+                    if (!bookRepository.existsByIsbn(isbn))
+                        bookList.add(book);
+                }
+            }
+            catch (IOException e) {
+                log.error("An error occurred while parsing and saving book data: ", e);
+            }
+        }
+        // 책 리스트 DB에 저장
+        bookRepository.saveAll(bookList);
+        log.info("Books inserted successfully into the database.");
     }
 }

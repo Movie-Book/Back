@@ -1,18 +1,17 @@
-package hello.moviebook.Data;
+package hello.moviebook.data;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
-import hello.moviebook.Movie.Movie;
-import hello.moviebook.Movie.MovieRepository;
+import hello.moviebook.movie.domain.Movie;
+import hello.moviebook.movie.repository.MovieRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.io.File;
 
 @Service
 @Slf4j
