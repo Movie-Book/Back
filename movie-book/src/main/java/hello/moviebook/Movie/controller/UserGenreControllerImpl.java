@@ -1,7 +1,7 @@
 package hello.moviebook.movie.controller;
 
-import hello.moviebook.user.dto.UserGenreReq;
-import hello.moviebook.user.service.UserService;
+import hello.moviebook.movie.dto.UserGenreReq;
+import hello.moviebook.movie.service.MovieService;
 import hello.moviebook.movie.domain.UserGenre;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/v1/genre")
 @RequiredArgsConstructor
 public class UserGenreControllerImpl implements UserGenreController {
-    private final UserService userService;
+    private final MovieService movieService;
 
     @PatchMapping("/prefer")
     public ResponseEntity<String> userPreferredGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq) {
         if (principal == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없는 접근입니다.");
 
-        UserGenre userGenre = userService.updateUserPreferredGenre(principal.getName(), userGenreReq);
+        UserGenre userGenre = movieService.updateUserPreferredGenre(principal.getName(), userGenreReq);
         if (userGenre == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
 
@@ -35,7 +35,7 @@ public class UserGenreControllerImpl implements UserGenreController {
         if (principal == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없는 접근입니다.");
 
-        UserGenre userGenre = userService.updateUserDislikedGenre(principal.getName(), userGenreReq);
+        UserGenre userGenre = movieService.updateUserDislikedGenre(principal.getName(), userGenreReq);
         if (userGenre == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
 
