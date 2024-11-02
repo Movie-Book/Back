@@ -1,6 +1,6 @@
 package hello.moviebook.movie.controller;
 
-import hello.moviebook.user.dto.UserGenreReq;
+import hello.moviebook.movie.dto.UserGenreReq;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -5,7 +5,7 @@ import hello.moviebook.user.repository.UserRepository;
 import hello.moviebook.jwt.JwtService;
 import hello.moviebook.jwt.TokenDTO;
 import hello.moviebook.user.dto.FindPwReq;
-import hello.moviebook.user.dto.UserGenreReq;
+import hello.moviebook.movie.dto.UserGenreReq;
 import hello.moviebook.user.dto.UserJoinReq;
 import hello.moviebook.user.dto.UserLoginReq;
 import hello.moviebook.movie.domain.UserGenre;
