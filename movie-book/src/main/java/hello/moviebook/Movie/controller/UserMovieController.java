@@ -28,4 +28,13 @@ public interface UserMovieController {
             @ApiResponse(responseCode = "400", description = "잘못된 접근입니다.", content = @Content(mediaType = "application/json")),
     })
     public ResponseEntity<String> userWatchingMovieList(Authentication principal, @RequestBody List<MovieRatingReq> movieList);
+
+    // 유저가 관람한 영화 평점 수정 API
+    @Operation(summary = "유저가 관람한 영화 평점 수정", description = "유저가 관람한 영화 평점 수정하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 선호 영화 정보가 저장되었습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "수정할 영화 정보가 없습니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<String> userMovieRatingList(Authentication principal, @RequestBody List<MovieRatingReq> movieList);
 }

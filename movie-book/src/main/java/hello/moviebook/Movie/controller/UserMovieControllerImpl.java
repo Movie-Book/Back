@@ -32,7 +32,7 @@ public class UserMovieControllerImpl implements UserMovieController {
         return ResponseEntity.status(HttpStatus.OK).body(movieInfoResList);
     }
 
-    // 유저 선호 영화 저장 API
+    // 유저 시청한 영화 저장 API
     @PostMapping("/watch")
     public ResponseEntity<String> userWatchingMovieList(Authentication principal, @RequestBody List<MovieRatingReq> movieList) {
         if (principal == null)
@@ -43,5 +43,19 @@ public class UserMovieControllerImpl implements UserMovieController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    // 유저가 관람한 영화 평점 수정 API
+    @PatchMapping("/rating")
+    public ResponseEntity<String> userMovieRatingList(Authentication principal, @RequestBody List<MovieRatingReq> movieList) {
+        if (principal == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+
+        if (movieList.isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
+        movieService.updateMovieRating(principal.getName(), movieList);
+
+        return ResponseEntity.status(HttpStatus.OK).body("영화 평점을 수정했습니다.");
     }
 }

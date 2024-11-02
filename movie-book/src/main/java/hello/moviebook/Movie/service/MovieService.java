@@ -1,5 +1,6 @@
 package hello.moviebook.movie.service;
 
+import hello.moviebook.movie.dto.UserGenreReq;
 import hello.moviebook.movie.repository.MovieRepository;
 import hello.moviebook.movie.repository.UserGenreRepository;
 import hello.moviebook.movie.repository.UserMovieRepository;
@@ -13,6 +14,7 @@ import hello.moviebook.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -76,6 +78,7 @@ public class MovieService {
     }
 
     // 유저 영화 리뷰 저장
+    @Transactional
     public String saveUserMovieList(List<MovieRatingReq> movieList, String userId) {
         User user = userRepository.findUserById(userId);
         if (user == null) {
@@ -98,5 +101,92 @@ public class MovieService {
         }
 
         return "유저 선호 영화 정보가 저장되었습니다.";
+    }
+
+    @Transactional
+    public UserGenre updateUserPreferredGenre(String userId, UserGenreReq userGenreReq) {
+        User user = userRepository.findUserById(userId);
+        UserGenre userGenre = userGenreRepository.findUserGenreByUser(user);
+
+        if (user == null)
+            return null;
+
+        // 유저 취향 장르 정보 설정
+        if (userGenreReq.getAction())
+            userGenre.setAction(1L);
+        if (userGenreReq.getDrama())
+            userGenre.setDrama(1L);
+        if (userGenreReq.getComedy())
+            userGenre.setComedy(1L);
+        if (userGenreReq.getRomance())
+            userGenre.setRomance(1L);
+        if (userGenreReq.getThriller())
+            userGenre.setThriller(1L);
+        if (userGenreReq.getHorror())
+            userGenre.setHorror(1L);
+        if (userGenreReq.getSf())
+            userGenre.setSf(1L);
+        if (userGenreReq.getFantasy())
+            userGenre.setFantasy(1L);
+        if (userGenreReq.getAnimation())
+            userGenre.setAnimation(1L);
+        if (userGenreReq.getDocumentary())
+            userGenre.setDocumentary(1L);
+        if (userGenreReq.getCrime())
+            userGenre.setCrime(1L);
+
+        userGenreRepository.save(userGenre);
+
+        return userGenre;
+    }
+
+    @Transactional
+    public UserGenre updateUserDislikedGenre(String userId, UserGenreReq userGenreReq) {
+        User user = userRepository.findUserById(userId);
+        UserGenre userGenre = userGenreRepository.findUserGenreByUser(user);
+
+        if (user == null)
+            return null;
+
+        // 유저 취향 장르 정보 설정
+        if (userGenreReq.getAction())
+            userGenre.setAction(-1L);
+        if (userGenreReq.getDrama())
+            userGenre.setDrama(-1L);
+        if (userGenreReq.getComedy())
+            userGenre.setComedy(-1L);
+        if (userGenreReq.getRomance())
+            userGenre.setRomance(-1L);
+        if (userGenreReq.getThriller())
+            userGenre.setThriller(-1L);
+        if (userGenreReq.getHorror())
+            userGenre.setHorror(-1L);
+        if (userGenreReq.getSf())
+            userGenre.setSf(-1L);
+        if (userGenreReq.getFantasy())
+            userGenre.setFantasy(-1L);
+        if (userGenreReq.getAnimation())
+            userGenre.setAnimation(-1L);
+        if (userGenreReq.getDocumentary())
+            userGenre.setDocumentary(-1L);
+        if (userGenreReq.getCrime())
+            userGenre.setCrime(-1L);
+
+        userGenreRepository.save(userGenre);
+
+        return userGenre;
+    }
+
+    @Transactional
+    public void updateMovieRating(String id, List<MovieRatingReq> ratingList) {
+        User user = userRepository.findUserById(id);
+        for (MovieRatingReq rating : ratingList) {
+            UserMovie movie = userMovieRepository.findByUserAndMovie(user, movieRepository.findMovieByMovieId(rating.getMovieId()));
+
+            if (!movie.getMovieRating().equals(rating.getRating())) {
+                movie.setMovieRating(rating.getRating());
+                userMovieRepository.save(movie);
+            }
+        }
     }
 }
