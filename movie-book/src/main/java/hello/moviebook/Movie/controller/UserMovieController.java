@@ -2,6 +2,7 @@ package hello.moviebook.movie.controller;
 
 import hello.moviebook.movie.dto.MovieInfoRes;
 import hello.moviebook.movie.dto.MovieRatingReq;
+import hello.moviebook.movie.dto.UserMovieRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,7 +30,6 @@ public interface UserMovieController {
     })
     public ResponseEntity<String> userWatchingMovieList(Authentication principal, @RequestBody List<MovieRatingReq> movieList);
 
-    // 유저가 관람한 영화 평점 수정 API
     @Operation(summary = "유저가 관람한 영화 평점 수정", description = "유저가 관람한 영화 평점 수정하는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 선호 영화 정보가 저장되었습니다.", content = @Content(mediaType = "application/json")),
@@ -37,4 +37,12 @@ public interface UserMovieController {
             @ApiResponse(responseCode = "400", description = "수정할 영화 정보가 없습니다.", content = @Content(mediaType = "application/json")),
     })
     public ResponseEntity<String> userMovieRatingList(Authentication principal, @RequestBody List<MovieRatingReq> movieList);
+
+    @Operation(summary = "유저가 관람한 영화 리스트 조회", description = "유저가 관람한 영화 리스트 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저가 관람한 영화 리스트를 조회했습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "조회할 영화 정보가 없습니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<List<UserMovieRes>> userMovieList(Authentication principal);
 }

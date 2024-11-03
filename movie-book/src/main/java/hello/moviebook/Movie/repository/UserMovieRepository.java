@@ -6,7 +6,11 @@ import hello.moviebook.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserMovieRepository extends JpaRepository<UserMovie, Long> {
     UserMovie findByUserAndMovie(User user, Movie movie);
+
+    List<UserMovie> findAllByUser(User user);
 }
