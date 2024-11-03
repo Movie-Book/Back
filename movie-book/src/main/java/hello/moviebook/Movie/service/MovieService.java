@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.List;
 
+import static hello.moviebook.movie.dto.UserGenreReq.dislikeGenreBuilder;
+import static hello.moviebook.movie.dto.UserGenreReq.preferGenreBuilder;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -188,5 +191,13 @@ public class MovieService {
                 userMovieRepository.save(movie);
             }
         }
+    }
+
+    public UserGenreReq getPreferredGenre(String id) {
+        return preferGenreBuilder(userGenreRepository.findUserGenreByUser(userRepository.findUserById(id)));
+    }
+
+    public UserGenreReq getDislikedGenre(String id) {
+        return dislikeGenreBuilder(userGenreRepository.findUserGenreByUser(userRepository.findUserById(id)));
     }
 }

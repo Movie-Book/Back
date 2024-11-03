@@ -1,5 +1,6 @@
 package hello.moviebook.movie.controller;
 
+import hello.moviebook.movie.domain.UserGenre;
 import hello.moviebook.movie.dto.UserGenreReq;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,7 +17,7 @@ public interface UserGenreController {
             @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 유저입니다.", content = @Content(mediaType = "application/json")),
     })
-    public ResponseEntity<String> userPreferredGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq);
+    public ResponseEntity<String> setPreferredGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq);
 
     @Operation(summary = "유저 취향 - 영화 장르", description = "유저 영화 장르 비선호도 조사 API")
     @ApiResponses(value = {
@@ -24,5 +25,21 @@ public interface UserGenreController {
             @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 유저입니다.", content = @Content(mediaType = "application/json")),
     })
-    public ResponseEntity<String> userDislikedGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq);
+    public ResponseEntity<String> setDislikedGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq);
+
+    @Operation(summary = "유저 선호 장르 조회", description = "유저 선호 장르 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 선호 장르를 조회했습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "장르 정보가 존재하지 않습니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<UserGenreReq> getPreferredGenre(Authentication principal);
+
+    @Operation(summary = "유저 비선호 장르 조회", description = "유저 비선호 장르 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 비선호 장르를 조회했습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "장르 정보가 존재하지 않습니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<UserGenreReq> getDislikedGenre(Authentication principal);
 }
