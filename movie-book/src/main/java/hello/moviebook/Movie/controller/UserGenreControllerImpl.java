@@ -3,6 +3,7 @@ package hello.moviebook.movie.controller;
 import hello.moviebook.movie.dto.UserGenreReq;
 import hello.moviebook.movie.service.MovieService;
 import hello.moviebook.movie.domain.UserGenre;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/api/v1/genre")
+@Tag(name = "Genre", description = "영화 장르 관련 API")
 @RequiredArgsConstructor
 public class UserGenreControllerImpl implements UserGenreController {
     private final MovieService movieService;
