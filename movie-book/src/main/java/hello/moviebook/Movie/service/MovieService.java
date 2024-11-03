@@ -1,6 +1,7 @@
 package hello.moviebook.movie.service;
 
 import hello.moviebook.movie.dto.UserGenreReq;
+import hello.moviebook.movie.dto.UserMovieRes;
 import hello.moviebook.movie.repository.MovieRepository;
 import hello.moviebook.movie.repository.UserGenreRepository;
 import hello.moviebook.movie.repository.UserMovieRepository;
@@ -19,9 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.List;
-
-import static hello.moviebook.movie.dto.UserGenreReq.dislikeGenreBuilder;
-import static hello.moviebook.movie.dto.UserGenreReq.preferGenreBuilder;
 
 @Service
 @Slf4j
@@ -194,10 +192,21 @@ public class MovieService {
     }
 
     public UserGenreReq getPreferredGenre(String id) {
-        return preferGenreBuilder(userGenreRepository.findUserGenreByUser(userRepository.findUserById(id)));
+        return UserGenreReq.preferGenreBuilder(userGenreRepository.findUserGenreByUser(userRepository.findUserById(id)));
     }
 
     public UserGenreReq getDislikedGenre(String id) {
-        return dislikeGenreBuilder(userGenreRepository.findUserGenreByUser(userRepository.findUserById(id)));
+        return UserGenreReq.dislikeGenreBuilder(userGenreRepository.findUserGenreByUser(userRepository.findUserById(id)));
+    }
+
+    public List<UserMovieRes> getUserMovieList(String id) {
+        List<UserMovie> userMovieList = userMovieRepository.findAllByUser(userRepository.findUserById(id));
+        List<UserMovieRes> userMovieResList = new ArrayList<>();
+
+        for (UserMovie userMovie : userMovieList) {
+            userMovieResList.add(UserMovieRes.defaultBuilder(userMovie, userMovie.getMovie()));
+        }
+
+        return userMovieResList;
     }
 }
