@@ -1,4 +1,4 @@
-package hello.moviebook.Jwt;
+package hello.moviebook.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +37,7 @@ public class SecurityConfig {
         // 메서드 권한 설정
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**", // swagger 관련
-                                "/user/join", "/user/login", "/user/find-id", "/user/reset-pw",
+                                "/api/v1/user/join", "/api/v1/user/login", "/api/v1/user/find-id", "/api/v1/user/reset-pw",
                                 "/movie/tmdb-korea/{page}", "/movie/tmdb-update-en", "/movie/set-keyword",
                                 "/translate", "data/kyobo"
                         ).permitAll()

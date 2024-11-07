@@ -1,17 +1,23 @@
-package hello.moviebook.Data;
+package hello.moviebook.data;
 
+import hello.moviebook.book.domain.Book;
+import hello.moviebook.book.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/data")
 @RequiredArgsConstructor
 public class DataController {
     private final DataService dataService;
+    private final BookService bookService;
 
     // tmdb5000 엑셀 파일 -> 데이터베이스 저장
     // MultipartFile을 사용하는 게 일반적, 추후 사용할 일 있다면 변경
@@ -61,4 +67,13 @@ public class DataController {
     // Movie DB 순회 -> 키워드 업데이트
     @PostMapping("/set-keyword/en")
     public void setEnKeywords() { dataService.insertEnKeywords();}
+
+    // 네이버 책 키워드 도서 조회 API -> DB 저장
+    @PostMapping()
+    public ResponseEntity<String> updateBookDB(@RequestParam("keyword") String keyword) {
+        List<Book> bookList = new ArrayList<>();
+        dataService.updateBookData(keyword, bookList);
+
+        return ResponseEntity.ok("Book data inserted successfully!\n");
+    }
 }

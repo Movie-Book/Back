@@ -1,23 +1,26 @@
 package hello.moviebook.movie.dto;
 
 import hello.moviebook.movie.domain.Movie;
+import hello.moviebook.movie.domain.UserMovie;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Setter;
 
-@AllArgsConstructor
 @Setter
+@AllArgsConstructor
 @Builder
-public class MovieInfoRes {
+public class UserMovieRes {
     private Long movieId;
     private String movieName;
     private String poster;
+    private Double rating;
 
-    public static MovieInfoRes defaultBuilder(Movie movie) {
-        return MovieInfoRes.builder()
+    public static UserMovieRes defaultBuilder(UserMovie userMovie, Movie movie) {
+        return UserMovieRes.builder()
                 .movieId(movie.getMovieId())
                 .movieName(movie.getMovieName())
                 .poster(movie.getPoster())
+                .rating(userMovie.getRating())
                 .build();
     }
 }
