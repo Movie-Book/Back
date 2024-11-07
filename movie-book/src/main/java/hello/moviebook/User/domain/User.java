@@ -1,7 +1,8 @@
 package hello.moviebook.user.domain;
 
 import hello.moviebook.book.domain.UserBook;
-import hello.moviebook.movie.domain.UserGenre;
+import hello.moviebook.movie.domain.UserDislikeGenre;
+import hello.moviebook.movie.domain.UserLikeGenre;
 import hello.moviebook.movie.domain.UserMovie;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -20,8 +21,8 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_number")
-    private Long userNumber;
+    @Column(name = "number")
+    private Long number;
 
     @Column(name = "id")
     private String id;
@@ -29,8 +30,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "user_name")
-    private String userName;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "email")
     private String email;
@@ -45,13 +46,16 @@ public class User {
     private List<UserBook> userBookList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserGenre> userGenreList;
+    private List<UserDislikeGenre> userDislikeGenreList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserLikeGenre> userLikeGenreList;
 
     @Builder
-    public User(String id, String password, String userName, String email) {
+    public User(String id, String password, String name, String email) {
         this.id = id;
         this.password = password;
-        this.userName = userName;
+        this.name = name;
         this.email = email;
         this.auth = USER;
     }
