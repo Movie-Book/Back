@@ -13,23 +13,23 @@ import lombok.Setter;
 public class UserMovie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_movie_number")
-    private Long userMovieNumber;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "movie_rating")
-    private Double movieRating;
+    @Column(name = "rating")
+    private Double rating;
 
     @ManyToOne
-    @JoinColumn(name = "user_number")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
-    public UserMovie(User user, Movie movie, Double movieRating) {
+    public UserMovie(User user, Movie movie, Double rating) {
         this.user = user;
         this.movie = movie;
-        this.movieRating = movieRating;
+        this.rating = rating;
     }
 }

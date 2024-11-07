@@ -92,7 +92,7 @@ public class JwtService {
         return TokenDTO.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
-                .userNumber(loginUser.getUserNumber())
+                .userNumber(loginUser.getNumber())
                 .build();
     }
 
