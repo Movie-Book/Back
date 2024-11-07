@@ -27,6 +27,22 @@ public interface UserGenreController {
     })
     public ResponseEntity<String> saveDislikeGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq);
 
+    @Operation(summary = "유저 선호 장르 수정", description = "유저 영화 선호 장르 수정 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 선호 장르 정보를 수정했습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 유저입니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<String> updateLikeGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq);
+
+    @Operation(summary = "유저 비선호 장르 수정", description = "유저 영화 비선호 장르 수정 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 비선호 장르 정보를 수정했습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 유저입니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<String> updateDislikeGenre(Authentication principal, @RequestBody UserGenreReq userGenreReq);
+
     @Operation(summary = "유저 선호 장르 조회", description = "유저 선호 장르 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 선호 장르를 조회했습니다.", content = @Content(mediaType = "application/json")),
