@@ -39,7 +39,7 @@ public class UserControllerImpl implements UserController{
         if (saveUser == null)
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 유저 정보입니다.");
 
-        return ResponseEntity.status(HttpStatus.OK).body(saveUser.getUserName() + "님 회원가입에 성공했습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(saveUser.getName() + "님 회원가입에 성공했습니다.");
     }
 
     // 로그인 API

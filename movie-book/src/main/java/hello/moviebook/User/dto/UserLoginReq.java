@@ -1,8 +1,8 @@
 package hello.moviebook.user.dto;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class UserLoginReq {
     private String id;
     private String password;

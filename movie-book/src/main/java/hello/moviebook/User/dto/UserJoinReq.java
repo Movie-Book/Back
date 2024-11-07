@@ -4,9 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class UserJoinReq {
     @NotBlank(message = "아이디를 입력해주세요.")
     @Size(min = 3, max = 10, message = "아이디를 3~10자리로 입력해주세요.")

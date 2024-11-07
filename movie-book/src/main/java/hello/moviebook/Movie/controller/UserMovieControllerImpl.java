@@ -33,7 +33,7 @@ public class UserMovieControllerImpl implements UserMovieController {
         return ResponseEntity.status(HttpStatus.OK).body(movieInfoResList);
     }
 
-    // 유저 시청한 영화 저장 API
+    // 유저 관람한 영화 저장 API
     @PostMapping("/watch")
     public ResponseEntity<String> userWatchingMovieList(Authentication principal, @RequestBody List<MovieRatingReq> movieList) {
         if (principal == null)
@@ -60,12 +60,26 @@ public class UserMovieControllerImpl implements UserMovieController {
         return ResponseEntity.status(HttpStatus.OK).body("영화 평점을 수정했습니다.");
     }
 
+    // 유저 관람한 영화 조회 API
     @GetMapping("/watch")
     public ResponseEntity<List<UserMovieRes>> userMovieList(Authentication principal) {
         if (principal == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 
         List<UserMovieRes> userMovieResList = movieService.getUserMovieList(principal.getName());
+        if (userMovieResList == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(userMovieResList);
+    }
+
+    // 영화 검색 API
+    @GetMapping("/search")
+    public ResponseEntity<List<UserMovieRes>> searchMovie(Authentication principal, @RequestParam("keyword") String keyword) {
+        if (principal == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+
+        List<UserMovieRes> userMovieResList = movieService.searchMovieList(principal.getName(), keyword);
         if (userMovieResList == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 

@@ -7,29 +7,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user_movie")
-@Getter @Setter
+@Table(name = "user_dislike_genre")
+@Setter @Getter
 @NoArgsConstructor
-public class UserMovie {
+public class UserDislikeGenre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "rating")
-    private Double rating;
+    @ManyToOne
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "movie_id")
-    private Movie movie;
-
-    public UserMovie(User user, Movie movie, Double rating) {
+    public UserDislikeGenre(Genre genre, User user) {
+        this.genre = genre;
         this.user = user;
-        this.movie = movie;
-        this.rating = rating;
     }
 }

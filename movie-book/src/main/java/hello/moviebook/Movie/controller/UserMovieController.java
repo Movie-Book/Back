@@ -4,12 +4,14 @@ import hello.moviebook.movie.dto.MovieInfoRes;
 import hello.moviebook.movie.dto.MovieRatingReq;
 import hello.moviebook.movie.dto.UserMovieRes;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -45,4 +47,13 @@ public interface UserMovieController {
             @ApiResponse(responseCode = "400", description = "조회할 영화 정보가 없습니다.", content = @Content(mediaType = "application/json")),
     })
     public ResponseEntity<List<UserMovieRes>> userMovieList(Authentication principal);
+
+    @Operation(summary = "영화 검색", description = "영화 검색 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "영화 검색 결과입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "유효성 검사 오류", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "잘못된 검색입니다.", content = @Content(mediaType = "application/json")),
+    })
+    @Parameter(name = "keyword", description = "검색어", example = "인터스텔라")
+    public ResponseEntity<List<UserMovieRes>> searchMovie(Authentication principal, @RequestParam("keyword") String keyword);
 }
