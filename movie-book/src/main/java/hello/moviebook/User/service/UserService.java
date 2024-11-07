@@ -5,11 +5,8 @@ import hello.moviebook.user.repository.UserRepository;
 import hello.moviebook.jwt.JwtService;
 import hello.moviebook.jwt.TokenDTO;
 import hello.moviebook.user.dto.FindPwReq;
-import hello.moviebook.movie.dto.UserGenreReq;
 import hello.moviebook.user.dto.UserJoinReq;
 import hello.moviebook.user.dto.UserLoginReq;
-import hello.moviebook.movie.domain.UserGenre;
-import hello.moviebook.movie.repository.UserGenreRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +25,6 @@ import java.util.Date;
 public class UserService {
 
     private final UserRepository userRepository;
-
-    private final UserGenreRepository userGenreRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -61,19 +56,12 @@ public class UserService {
                 .id(joinReq.getId())
                 // 비밀번호 암호화해 저장
                 .password(passwordEncoder.encode(joinReq.getPassword()))
-                .userName(joinReq.getUserName())
+                .name(joinReq.getUserName())
                 .email(joinReq.getEmail())
                 .build();
 
         // 유저 정보 저장
         userRepository.save(newUser);
-
-        // 유저-장르 정보 생성
-        UserGenre newUserGenre = new UserGenre(newUser);
-
-        // 유저-장르 정보 저장
-        userGenreRepository.save(newUserGenre);
-
         return (newUser);
     }
 
@@ -136,7 +124,7 @@ public class UserService {
 
     public String getUserId(String userName, String email) {
         // 이메일로 유저 검색
-         User nameUser = userRepository.findUserByUserName(userName);
+         User nameUser = userRepository.findUserByName(userName);
          User emailUser = userRepository.findUserByEmail(email);
 
          // 존재하지 않는 유저인 경우
@@ -167,77 +155,5 @@ public class UserService {
          userRepository.save(findUser);
 
          return (findUser);
-    }
-
-    public UserGenre updateUserPreferredGenre(String userId, UserGenreReq userGenreReq) {
-        User user = userRepository.findUserById(userId);
-        UserGenre userGenre = userGenreRepository.findUserGenreByUser(user);
-
-        if (user == null)
-            return null;
-
-        // 유저 취향 장르 정보 설정
-        if (userGenreReq.getAction())
-            userGenre.setAction(1L);
-        if (userGenreReq.getDrama())
-            userGenre.setDrama(1L);
-        if (userGenreReq.getComedy())
-            userGenre.setComedy(1L);
-        if (userGenreReq.getRomance())
-            userGenre.setRomance(1L);
-        if (userGenreReq.getThriller())
-            userGenre.setThriller(1L);
-        if (userGenreReq.getHorror())
-            userGenre.setHorror(1L);
-        if (userGenreReq.getSf())
-            userGenre.setSf(1L);
-        if (userGenreReq.getFantasy())
-            userGenre.setFantasy(1L);
-        if (userGenreReq.getAnimation())
-            userGenre.setAnimation(1L);
-        if (userGenreReq.getDocumentary())
-            userGenre.setDocumentary(1L);
-        if (userGenreReq.getCrime())
-            userGenre.setCrime(1L);
-
-       userGenreRepository.save(userGenre);
-
-       return userGenre;
-    }
-
-    public UserGenre updateUserDislikedGenre(String userId, UserGenreReq userGenreReq) {
-        User user = userRepository.findUserById(userId);
-        UserGenre userGenre = userGenreRepository.findUserGenreByUser(user);
-
-        if (user == null)
-            return null;
-
-        // 유저 취향 장르 정보 설정
-        if (userGenreReq.getAction())
-            userGenre.setAction(-1L);
-        if (userGenreReq.getDrama())
-            userGenre.setDrama(-1L);
-        if (userGenreReq.getComedy())
-            userGenre.setComedy(-1L);
-        if (userGenreReq.getRomance())
-            userGenre.setRomance(-1L);
-        if (userGenreReq.getThriller())
-            userGenre.setThriller(-1L);
-        if (userGenreReq.getHorror())
-            userGenre.setHorror(-1L);
-        if (userGenreReq.getSf())
-            userGenre.setSf(-1L);
-        if (userGenreReq.getFantasy())
-            userGenre.setFantasy(-1L);
-        if (userGenreReq.getAnimation())
-            userGenre.setAnimation(-1L);
-        if (userGenreReq.getDocumentary())
-            userGenre.setDocumentary(-1L);
-        if (userGenreReq.getCrime())
-            userGenre.setCrime(-1L);
-
-       userGenreRepository.save(userGenre);
-
-       return userGenre;
     }
 }
