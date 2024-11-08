@@ -19,10 +19,11 @@ jobs:
         shell: bash
 
       # SSH 연결 테스트
-      - name: Test SSH Connection
+      - name: Test SSH Connection with Debug
         run: |
-          ssh -o StrictHostKeyChecking=no mycapisnavy@${{ secrets.GCP_HOST }} "echo 'SSH Connection Successful'"
+          ssh -vvv -o StrictHostKeyChecking=no mycapisnavy@${{ secrets.GCP_HOST }} "echo 'SSH Connection Successful'"
         shell: bash
+
 
       # Java 환경을 설정합니다.
       - uses: actions/setup-java@v3
