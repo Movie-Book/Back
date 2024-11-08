@@ -25,7 +25,7 @@ jobs:
       # run: run 키워드는 실행할 명령어를 입력합니다.
       - name: make application-mysql.yml
         run: |
-          cd ./movie-book/src/main/resources
+          mkdir -p ./movie-book/src/main/resources  # 디렉토리 생성
           echo "${{ secrets.MYSQL_APPLICATION }}" >> ./application.properties
       
       - run: cat ./movie-book/src/main/resources/application.properties
