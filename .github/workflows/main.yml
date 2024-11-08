@@ -41,7 +41,7 @@ jobs:
       
       # github artifact에 jar파일 복사
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-artifact
           path: build/libs/*.jar
