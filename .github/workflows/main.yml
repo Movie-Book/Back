@@ -21,7 +21,7 @@ jobs:
       - name: Set up application.properties
         run: |
           mkdir -p ./movie-book/src/main/resources
-          echo "${{ secrets.MYSQL_APPLICATION }}" > ./movie-book/src/main/resources/application.properties
+          echo "${{ secrets.APPLICATION }}" > ./movie-book/src/main/resources/application.properties
 
       # application.properties 파일이 올바르게 생성되었는지 확인합니다.
       - name: Verify application.properties file
