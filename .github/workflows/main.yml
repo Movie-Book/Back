@@ -22,9 +22,9 @@ jobs:
         shell: bash
 
       # SSH 연결 테스트
-      - name: Test SSH Connection with Debug
+      - name: Test SSH Connection
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no mycapisnavy@${{ secrets.GCP_HOST }} "echo 'SSH Connection Successful'"
+          ssh -i /home/runner/.ssh/movie-book -vvv -o StrictHostKeyChecking=no mycapisnavy@${{ secrets.GCP_HOST }} "echo 'SSH Connection Successful'"
         shell: bash
 
 
