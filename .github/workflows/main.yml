@@ -14,7 +14,7 @@ jobs:
       # SSH Agent를 시작하고 SSH 키를 추가합니다.
       - name: Start SSH Agent and Add Key
         run: |
-          eval "$(ssh-agent -s)"
+          eval "$(ssh-agent -s)"  # ssh-agent 시작
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add -
         shell: bash
 
