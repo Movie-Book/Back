@@ -8,9 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # 소스 코드를 체크아웃합니다.
       - uses: actions/checkout@v3
 
-      # SSH 키를 추가하여 ssh-agent에서 사용하도록 설정
+      # SSH Agent를 시작하고 SSH 키를 추가합니다.
       - name: Start SSH Agent and Add Key
         run: |
           eval "$(ssh-agent -s)"
@@ -23,13 +24,28 @@ jobs:
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.GCP_HOST }} "echo 'SSH Connection Successful'"
         shell: bash
 
-      # GCP 서버에 ssh-agent와 ssh-add 실행
-      - name: Start ssh-agent and add key on GCP server
+      # Java 환경을 설정합니다.
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # application.properties 파일을 생성합니다.
+      - name: Set up application.properties
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.GCP_HOST }} "
-          eval \$(ssh-agent -s) && ssh-add ~/.ssh/movie-book
-          "
-        shell: bash
+          mkdir -p ./movie-book/src/main/resources
+          echo "${{ secrets.APPLICATION }}" > ./movie-book/src/main/resources/application.properties
+
+      # application.properties 파일이 올바르게 생성되었는지 확인합니다.
+      - name: Verify application.properties file
+        run: |
+          ls -R ./movie-book/src/main/resources
+          cat ./movie-book/src/main/resources/application.properties
+
+      # gradlew 파일에 실행 권한을 부여합니다.
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        working-directory: movie-book
 
       # Gradle을 사용해 프로젝트를 빌드합니다.
       - name: Build with Gradle
