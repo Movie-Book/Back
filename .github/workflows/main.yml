@@ -55,6 +55,12 @@ jobs:
         run: ./gradlew clean build
         working-directory: movie-book
 
+      # 원격 서버에 대상 디렉터리가 없는 경우 생성
+      - name: Create target directory on remote server
+        run: |
+          ssh -i /home/runner/.ssh/movie-book -o StrictHostKeyChecking=no mycapisnavy@${{ secrets.GCP_HOST }} "mkdir -p /home/mycapisnavy/cicd/"
+        shell: bash
+        
       # 빌드된 JAR 파일을 원격 서버로 복사합니다.
       - name: Copy jar file to remote
         run: |
