@@ -15,7 +15,7 @@ else
 fi
 
 # 새로운 JAR 파일의 경로를 설정합니다.
-JAR_PATH=" /home/ubuntu/cicd/*.jar"
+JAR_PATH=" /home/mycapisnavy/cicd/*.jar"
 echo "JAR Path: $JAR_PATH"
 
 # JAR 파일에 실행 권한을 부여합니다.
