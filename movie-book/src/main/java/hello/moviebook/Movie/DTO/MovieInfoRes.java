@@ -3,10 +3,12 @@ package hello.moviebook.movie.dto;
 import hello.moviebook.movie.domain.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
 @Setter
+@Getter
 @Builder
 public class MovieInfoRes {
     private Long movieId;
