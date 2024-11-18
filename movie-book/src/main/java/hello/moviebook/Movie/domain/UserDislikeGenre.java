@@ -17,11 +17,11 @@ public class UserDislikeGenre {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "genre_id")
+    @JoinColumn(name = "genre_number")
     private Genre genre;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_number")
     private User user;
 
     public UserDislikeGenre(Genre genre, User user) {
