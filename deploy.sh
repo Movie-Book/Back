@@ -16,7 +16,12 @@ fi
 
 # 새로운 JAR 파일의 경로를 설정합니다.
 JAR_PATH="/home/mycapisnavy/cicd/movie-book-0.0.1-SNAPSHOT.jar"
+PROPERTIES_PATH="/home/mycapisnavy/cicd/application.properties"
 echo "JAR Path: $JAR_PATH"
+
+# application.properties 생성
+echo "$APPLICATION" > $PROPERTIES_PATH
+echo "application.properties created at $PROPERTIES_PATH"
 
 # JAR 파일에 실행 권한을 부여합니다.
 chmod +x $JAR_PATH
