@@ -1,6 +1,8 @@
 package hello.moviebook.jwt;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,7 +21,14 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
 
-    // BCryptPasswordEncoder
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+
+    @PostConstruct
+    public void logSecretKey() {
+        System.out.println("DEBUG: JWT Secret Key = " + secretKey);
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
