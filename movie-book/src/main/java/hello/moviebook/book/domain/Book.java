@@ -31,7 +31,6 @@ public class Book {
     private String author;
 
     @Column(columnDefinition = "TEXT")
-    @Lob
     @JsonProperty("description")
     private String description;
 
@@ -42,6 +41,9 @@ public class Book {
     @Column(name = "pub_date")
     @JsonProperty("pub_date")
     private String pubDate;
+
+    @Column(name = "genre")
+    private String genre;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<UserBook> userBookList;
