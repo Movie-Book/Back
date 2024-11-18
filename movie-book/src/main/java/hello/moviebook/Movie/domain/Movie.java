@@ -31,8 +31,8 @@ public class Movie {
     @Column(name = "keyword_kor")
     private String keywordKor;
 
-    @Column(name = "description")
-    @JsonProperty("overview")
+    @Column(columnDefinition = "TEXT")
+//    @JsonProperty("overview")
     private String description;
 
     @Column(name = "poster")
@@ -44,7 +44,8 @@ public class Movie {
     @Column(name = "genre_en")
     private String genreEn;
 
-    @Column(name = "description_en")
+    @Column(columnDefinition = "TEXT", name = "description_en")
+    @JsonProperty("overview")
     private String descriptionEn;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)

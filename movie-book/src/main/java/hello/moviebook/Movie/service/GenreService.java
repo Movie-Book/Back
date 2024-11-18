@@ -29,7 +29,7 @@ public class GenreService {
 
         // 유저 선호 장르 정보 설정
         for (Long genre : genres) {
-            userLikeGenreRepository.save(new UserLikeGenre(genreRepository.findGenreById(genre), user));
+            userLikeGenreRepository.save(new UserLikeGenre(genreRepository.findGenreByNumber(genre), user));
         }
 
         return true;
@@ -42,7 +42,7 @@ public class GenreService {
 
         // 유저 선호 장르 정보 설정
         for (Long genre : genres) {
-            userDislikeGenreRepository.save(new UserDislikeGenre(genreRepository.findGenreById(genre), user));
+            userDislikeGenreRepository.save(new UserDislikeGenre(genreRepository.findGenreByNumber(genre), user));
         }
 
         return true;
@@ -50,13 +50,13 @@ public class GenreService {
 
     public List<Long> getUserLikeGenre(String id) {
         return userLikeGenreRepository.findAllByUser(userRepository.findUserById(id)).stream()
-                .map(userLikeGenre -> userLikeGenre.getGenre().getId())
+                .map(userLikeGenre -> userLikeGenre.getGenre().getNumber())
                 .toList();
     }
 
     public List<Long> getUserDislikeGenre(String id) {
         return userDislikeGenreRepository.findAllByUser(userRepository.findUserById(id)).stream()
-                .map(userDislikeGenre -> userDislikeGenre.getGenre().getId())
+                .map(userDislikeGenre -> userDislikeGenre.getGenre().getNumber())
                 .toList();
     }
 
@@ -69,7 +69,7 @@ public class GenreService {
 
         // 유저 선호 장르 정보 설정
         for (Long genre : genres) {
-            userLikeGenreRepository.save(new UserLikeGenre(genreRepository.findGenreById(genre), user));
+            userLikeGenreRepository.save(new UserLikeGenre(genreRepository.findGenreByNumber(genre), user));
         }
 
         return true;
@@ -84,7 +84,7 @@ public class GenreService {
 
         // 유저 선호 장르 정보 설정
         for (Long genre : genres) {
-            userDislikeGenreRepository.save(new UserDislikeGenre(genreRepository.findGenreById(genre), user));
+            userDislikeGenreRepository.save(new UserDislikeGenre(genreRepository.findGenreByNumber(genre), user));
         }
 
         return true;
