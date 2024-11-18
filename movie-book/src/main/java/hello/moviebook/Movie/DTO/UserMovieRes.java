@@ -4,9 +4,11 @@ import hello.moviebook.movie.domain.Movie;
 import hello.moviebook.movie.domain.UserMovie;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Setter;
 
 @Setter
+@Getter
 @AllArgsConstructor
 @Builder
 public class UserMovieRes {
