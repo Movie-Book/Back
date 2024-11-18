@@ -13,15 +13,15 @@ import lombok.Setter;
 public class UserLikeGenre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "number")
+    private Long number;
 
     @ManyToOne
-    @JoinColumn(name = "genre_id")
+    @JoinColumn(name = "genre_number")
     private Genre genre;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_number")
     private User user;
 
     public UserLikeGenre(Genre genre, User user) {

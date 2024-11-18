@@ -13,18 +13,18 @@ import lombok.Setter;
 public class UserMovie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "number")
+    private Long number;
 
     @Column(name = "rating")
     private Double rating;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_number")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "movie_id")
+    @JoinColumn(name = "movie_number")
     private Movie movie;
 
     public UserMovie(User user, Movie movie, Double rating) {
