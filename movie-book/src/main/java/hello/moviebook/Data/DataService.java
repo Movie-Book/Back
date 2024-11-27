@@ -8,10 +8,8 @@ import hello.moviebook.movie.domain.Movie;
 import hello.moviebook.movie.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +59,52 @@ public class DataService {
             log.info("Books inserted successfully into the database. count : {}", cnt);
         } catch (IOException e) {
             log.error("An error occurred while parsing and saving book data: ", e);
+        }
+    }
+
+    // Book_Keywords.xlsx 파일을 읽고 DB에 저장하는 메서드
+    public void saveBookKeywords(String filePath) throws IOException {
+        // 파일 읽기
+        FileInputStream fileInputStream = new FileInputStream(new File(filePath));
+        Workbook workbook = new XSSFWorkbook(fileInputStream);
+        Sheet sheet = workbook.getSheetAt(1); // 두 번째 시트 가져오기
+
+        for (Row row : sheet) {
+            Cell titleCell = row.getCell(0); // A열
+            Cell keywordCell = row.getCell(1); // B열
+
+            if (titleCell != null && keywordCell != null) {
+                Book book = bookRepository.findBookByBookName(getCellValue(titleCell));
+
+                if (book == null)
+                    continue;
+                // 키워드 저장 ([, ] 제거)
+                String rawKeywords = getCellValue(keywordCell)
+                                        .replaceAll("[\\[\\]]", "");
+
+                book.setKeyword(rawKeywords);
+                bookRepository.save(book);
+            }
+        }
+
+        workbook.close();
+        fileInputStream.close();
+    }
+
+    private String getCellValue(Cell cell) {
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            case FORMULA:
+                return cell.getCellFormula();
+            case BLANK:
+                return "";
+            default:
+                return "UNKNOWN";
         }
     }
 
