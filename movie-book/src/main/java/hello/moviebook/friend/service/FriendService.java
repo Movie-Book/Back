@@ -1,6 +1,9 @@
 package hello.moviebook.friend.service;
 
+import hello.moviebook.book.domain.UserBook;
+import hello.moviebook.book.repository.UserBookRepository;
 import hello.moviebook.friend.domain.Friend;
+import hello.moviebook.friend.dto.FriendBookListRes;
 import hello.moviebook.friend.dto.FriendListRes;
 import hello.moviebook.friend.repository.FriendRepository;
 import hello.moviebook.user.domain.User;
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FriendService {
     private final UserRepository userRepository;
+    private final UserBookRepository userBookRepository;
     private final FriendRepository friendRepository;
 
     public List<FriendListRes> getFriends(String userId) {
@@ -54,5 +58,14 @@ public class FriendService {
         }
 
         return true;
+    }
+
+    public FriendBookListRes getFriendBookList(User friend) {
+        List<UserBook> userBookList = userBookRepository.findAllByUser(friend);
+
+        return FriendBookListRes.builder()
+                    .user(friend)
+                    .userBookList(userBookList)
+                    .build();
     }
 }

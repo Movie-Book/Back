@@ -4,6 +4,8 @@ import hello.moviebook.friend.dto.FriendBookListRes;
 import hello.moviebook.friend.dto.FriendListRes;
 import hello.moviebook.friend.dto.FriendReq;
 import hello.moviebook.friend.service.FriendService;
+import hello.moviebook.user.domain.User;
+import hello.moviebook.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +19,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FriendController {
     private final FriendService friendService;
+    private final UserRepository userRepository;
 
-    @GetMapping("/{userNumber}")
-    public ResponseEntity<List<FriendListRes>> getFriendList(Authentication authentication, @PathVariable("userNumber") Long userNumber) {
+    @GetMapping("")
+    public ResponseEntity<List<FriendListRes>> getFriendList(Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
@@ -50,10 +53,17 @@ public class FriendController {
         return ResponseEntity.status(HttpStatus.OK).body(friendReq.getId() + "님을 친구 목록에서 삭제했습니다.");
     }
 
-    @GetMapping("/{userNumber}/book")
-    public ResponseEntity<FriendBookListRes> getFriendBookList(Authentication authentication, @PathVariable("userNumber") Long userNumber) {
+    @GetMapping("/{id}/book")
+    public ResponseEntity<FriendBookListRes> getFriendBookList(Authentication authentication, @PathVariable("id") String id) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+
+        User friend = userRepository.findUserById(id);
+        if (friend == null)
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+
+        FriendBookListRes friendBookList = friendService.getFriendBookList(friend);
+        return ResponseEntity.status(HttpStatus.OK).body(friendBookList);
     }
 }
