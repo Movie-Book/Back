@@ -26,4 +26,19 @@ public class FriendService {
         return true;
     }
 
+    public boolean deleteFriend(String userId, String friendId) {
+        User user = userRepository.findUserById(userId);
+        User friend = userRepository.findUserById(friendId);
+
+        if (user == null || friend == null)
+            return false;
+
+        if (userId.compareTo(friendId) < 0) {
+            friendRepository.delete(friendRepository.findByUser1AndUser2(user, friend));
+        } else {
+            friendRepository.delete(friendRepository.findByUser1AndUser2(friend, user));
+        }
+
+        return true;
+    }
 }
