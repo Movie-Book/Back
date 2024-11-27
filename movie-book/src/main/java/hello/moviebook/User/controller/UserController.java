@@ -61,7 +61,4 @@ public interface UserController {
             @ApiResponse(responseCode = "404", description = "올바르지 않은 정보입니다.", content = @Content(mediaType = "application/json")),
     })
     public ResponseEntity<String> resetUserPw(@Valid @RequestBody FindPwReq findPwReq, BindingResult bindingResult);
-
-    @Operation(summary = "Test", description = "로그인 테스트용(연동XX)")
-    public ResponseEntity<String> test(Authentication principal);
 }
