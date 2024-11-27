@@ -10,18 +10,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/friend")
+@RequestMapping("/api/v1/friend")
 @RequiredArgsConstructor
 public class FriendController {
     private final FriendService friendService;
 
     @GetMapping("/{userNumber}")
-    public ResponseEntity<FriendListRes> getFriendList(Authentication authentication, @PathVariable("userNumber") Long userNumber) {
+    public ResponseEntity<List<FriendListRes>> getFriendList(Authentication authentication, @PathVariable("userNumber") Long userNumber) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
+        List<FriendListRes> friendList = friendService.getFriends(authentication.getName());
+        return ResponseEntity.status(HttpStatus.OK).body(friendList);
     }
 
     @PostMapping("/add")

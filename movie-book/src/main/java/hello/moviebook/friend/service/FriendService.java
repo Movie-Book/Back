@@ -1,17 +1,31 @@
 package hello.moviebook.friend.service;
 
 import hello.moviebook.friend.domain.Friend;
+import hello.moviebook.friend.dto.FriendListRes;
 import hello.moviebook.friend.repository.FriendRepository;
 import hello.moviebook.user.domain.User;
 import hello.moviebook.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FriendService {
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
+
+    public List<FriendListRes> getFriends(String userId) {
+        User user = userRepository.findUserById(userId);
+
+        return friendRepository.findAllByUser1OrUser2(user, user).stream()
+                .map(friend -> FriendListRes.builder()
+                        .userId(userId)
+                        .friend(friend)
+                        .build())
+                .toList();
+    }
 
     public boolean addFriend(String userId, String friendId) {
         User user = userRepository.findUserById(userId);

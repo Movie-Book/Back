@@ -3,9 +3,13 @@ package hello.moviebook.friend.domain;
 import hello.moviebook.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "friend")
+@Getter
+@NoArgsConstructor
 public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
