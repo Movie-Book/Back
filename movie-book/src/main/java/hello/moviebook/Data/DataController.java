@@ -48,6 +48,16 @@ public class DataController {
         }
     }
 
+    @PostMapping("/kyobo/keyword")
+    public String uploadKeywordsFile(@RequestParam("filepath") String filePath) {
+        try {
+            dataService.saveBookKeywords(filePath);
+            return "Books uploaded successfully!";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
     //Movie DB 순회 -> 이미지 경로 데이터 추가 + 영화명, 줄거리, 장르 한국어로 수정
     @PatchMapping("/update/kor")
     public void getKoMovieData() {
