@@ -45,7 +45,9 @@ public class Book {
     @Column(name = "genre")
     private String genre;
 
+    @Column(name = "keyword")
+    private String keyword;
+
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<UserBook> userBookList;
-
 }
