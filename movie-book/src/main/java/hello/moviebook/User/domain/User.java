@@ -1,6 +1,7 @@
 package hello.moviebook.user.domain;
 
 import hello.moviebook.book.domain.UserBook;
+import hello.moviebook.friend.domain.Friend;
 import hello.moviebook.movie.domain.UserDislikeGenre;
 import hello.moviebook.movie.domain.UserLikeGenre;
 import hello.moviebook.movie.domain.UserMovie;
@@ -50,6 +51,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserLikeGenre> userLikeGenreList;
+
+    @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL)
+    private List<Friend> friendUserOne;
+
+    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL)
+    private List<Friend> friendUserTwo;
 
     @Builder
     public User(String id, String password, String name, String email) {
