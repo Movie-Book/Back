@@ -31,11 +31,12 @@ public class FriendService {
                 .toList();
     }
 
-    public boolean addFriend(String userId, String friendId) {
-        User user = userRepository.findUserById(userId);
-        User friend = userRepository.findUserById(friendId);
+    public boolean addFriend(User user, User friend) {
 
-        if (user == null || friend == null)
+        if (user.getNumber() > friend.getNumber() && friendRepository.findByUser1AndUser2(friend, user) != null)
+            return false;
+
+        if (user.getNumber() < friend.getNumber() && friendRepository.findByUser1AndUser2(user, friend) != null)
             return false;
 
         Friend newFriend = new Friend(user, friend);
@@ -44,16 +45,15 @@ public class FriendService {
         return true;
     }
 
-    public boolean deleteFriend(String userId, String friendId) {
-        User user = userRepository.findUserById(userId);
-        User friend = userRepository.findUserById(friendId);
+    public boolean deleteFriend(User user, User friend) {
 
-        if (user == null || friend == null)
-            return false;
-
-        if (userId.compareTo(friendId) < 0) {
+        if (user.getNumber().compareTo(friend.getNumber()) < 0) {
+            if (friendRepository.findByUser1AndUser2(friend, user) == null)
+                return false;
             friendRepository.delete(friendRepository.findByUser1AndUser2(user, friend));
         } else {
+            if (friendRepository.findByUser1AndUser2(user, friend) == null)
+                return false;
             friendRepository.delete(friendRepository.findByUser1AndUser2(friend, user));
         }
 

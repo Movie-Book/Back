@@ -37,8 +37,12 @@ public class FriendControllerImpl implements FriendController{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        if (!friendService.addFriend(authentication.getName(), friendReq.getId()))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(friendReq.getId() + "님을 친구 추가에 실패했습니다.");
+        User friend = userRepository.findUserById(friendReq.getId());
+        if (friend == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
+
+        if (!friendService.addFriend(userRepository.findUserById(authentication.getName()), friend))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 친구 관계를 맺은 상태입니다.");
         return ResponseEntity.status(HttpStatus.OK).body(friendReq.getId() + "님을 친구 목록에 추가했습니다.");
     }
 
@@ -48,8 +52,13 @@ public class FriendControllerImpl implements FriendController{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        if (!friendService.deleteFriend(authentication.getName(), friendReq.getId()))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(friendReq.getId() + "님을 친구 삭제에 실패했습니다.");
+        User friend = userRepository.findUserById(friendReq.getId());
+        if (friend == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
+
+
+        if (!friendService.deleteFriend(userRepository.findUserById(authentication.getName()), friend))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(friendReq.getId() + "님과 친구 관계가 아닙니다.");
         return ResponseEntity.status(HttpStatus.OK).body(friendReq.getId() + "님을 친구 목록에서 삭제했습니다.");
     }
 
