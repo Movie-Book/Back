@@ -10,6 +10,7 @@ import hello.moviebook.user.domain.User;
 import hello.moviebook.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class FriendService {
                 .toList();
     }
 
+    @Transactional
     public boolean addFriend(User user, User friend) {
 
         if (user.getNumber() > friend.getNumber() && friendRepository.findByUser1AndUser2(friend, user) != null)
@@ -45,6 +47,7 @@ public class FriendService {
         return true;
     }
 
+    @Transactional
     public boolean deleteFriend(User user, User friend) {
 
         if (user.getNumber().compareTo(friend.getNumber()) < 0) {
