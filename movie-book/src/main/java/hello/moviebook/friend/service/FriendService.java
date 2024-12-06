@@ -46,16 +46,17 @@ public class FriendService {
     }
 
     public boolean deleteFriend(User user, User friend) {
+        Friend relation;
 
-        if (user.getNumber().compareTo(friend.getNumber()) < 0) {
-            if (friendRepository.findByUser1AndUser2(friend, user) == null)
-                return false;
-            friendRepository.delete(friendRepository.findByUser1AndUser2(user, friend));
-        } else {
-            if (friendRepository.findByUser1AndUser2(user, friend) == null)
-                return false;
-            friendRepository.delete(friendRepository.findByUser1AndUser2(friend, user));
-        }
+        if (user.getNumber() < friend.getNumber())
+            relation = friendRepository.findByUser1AndUser2(user, friend);
+        else
+            relation = friendRepository.findByUser1AndUser2(friend, user);
+
+        if (relation == null)
+            return false;
+
+        friendRepository.delete(relation);
 
         return true;
     }
