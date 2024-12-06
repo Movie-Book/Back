@@ -58,7 +58,7 @@ public class JwtService {
     }
 
     // 리프레쉬 토큰 생성
-    public String createRefreshToken(String id) {
+    public String createRefreshToken(String accessToken) {
         long now = (new Date()).getTime();
 
         String refreshToken = Jwts.builder()
@@ -68,7 +68,7 @@ public class JwtService {
 
         // redis에 Refresh Token 저장
         redisTemplate.opsForValue()
-                .set(PREFIX_REFRESH + id, refreshToken, Duration.ofSeconds(REFRESH_TOKEN_EXPIRE_TIME));
+                .set(PREFIX_REFRESH + accessToken, refreshToken, Duration.ofSeconds(REFRESH_TOKEN_EXPIRE_TIME));
 
         return refreshToken;
     }
@@ -80,7 +80,7 @@ public class JwtService {
         String accessToken = createAccessToken(loginUser.getId());
 
         // Refresh Token 생성
-        String refreshToken = createRefreshToken(loginUser.getId());
+        String refreshToken = createRefreshToken(accessToken);
 
         // RefreshToken 만료 기한 설정
         Date refreshExpiration = parseClaims(refreshToken).getExpiration();
@@ -106,8 +106,8 @@ public class JwtService {
     }
 
     // Request Header에서 리프레쉬 토큰 정보 추출
-    public String resolveRefreshToken(String id) {
-        String refreshToken = redisTemplate.opsForValue().get(PREFIX_REFRESH + id);
+    public String resolveRefreshToken(String token) {
+        String refreshToken = redisTemplate.opsForValue().get(PREFIX_REFRESH + token);
         if (StringUtils.hasText(refreshToken)) {
             return refreshToken;
         }
@@ -148,8 +148,8 @@ public class JwtService {
     // 토큰 정보를 검증하는 메서드
     public boolean validateAccessToken(String token) {
         try {
-            String email = parseClaims(token).getSubject();
-            String logoutToken = redisTemplate.opsForValue().get(PREFIX_LOGOUT + email);
+            String id = parseClaims(token).getSubject();
+            String logoutToken = redisTemplate.opsForValue().get(PREFIX_LOGOUT + id);
 
             log.info("제공된 토큰: {}", token);
             log.info("로그아웃된 토큰: {}", logoutToken);
@@ -164,6 +164,7 @@ public class JwtService {
                     .build()
                     .parseClaimsJws(token);
             return (true);
+
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
         } catch (ExpiredJwtException e) {
@@ -181,7 +182,7 @@ public class JwtService {
     // db에 저장되어 있는 token과 비교
     // db에 저장한다는 것이 jwt token을 사용한다는 강점을 상쇄시킨다.
     // db 보다는 redis를 사용하는 것이 더욱 좋다. (in-memory db기 때문에 조회속도가 빠르고 주기적으로 삭제하는 기능이 기본적으로 존재합니다.)
-    public boolean refreshTokenValidation(String accessToken, String id) {
+    public boolean refreshTokenValidation(String accessToken) {
         String logoutRefresh = redisTemplate.opsForValue().get(PREFIX_LOGOUT_REFRESH + accessToken);
 
         log.info("로그아웃된 토큰: {}", logoutRefresh);

@@ -39,16 +39,15 @@ public class JwtAuthFilter extends GenericFilterBean {
         }
         catch (ExpiredJwtException e) {
             // 3. RefreshToken 유효성 검사
-            if (jwtService.refreshTokenValidation(accessToken, e.getClaims().getSubject())) {
+            if (jwtService.refreshTokenValidation(accessToken)) {
                 // 액세스 토큰이 만료된 경우 리프레쉬 토큰을 통해 액세스 토큰 재발급을 시도한다.
                 String id = e.getClaims().getSubject();
 
                 String newAccessToken = jwtService.createAccessToken(id);
-                String newRefreshToken = jwtService.createRefreshToken(id);
+                String newRefreshToken = jwtService.createRefreshToken(newAccessToken);
 
                 HttpServletResponse httpResponse = (HttpServletResponse) response;
                 httpResponse.setHeader("AccessToken", newAccessToken);
-                httpResponse.setHeader("RefreshToken", newRefreshToken);
 
                 log.info("Token 재발급");
                 log.info("New AccessToken : {}", newAccessToken);
