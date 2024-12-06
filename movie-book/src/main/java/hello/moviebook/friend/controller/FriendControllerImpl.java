@@ -56,7 +56,6 @@ public class FriendControllerImpl implements FriendController{
         if (friend == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 유저입니다.");
 
-
         if (!friendService.deleteFriend(userRepository.findUserById(authentication.getName()), friend))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(friendReq.getId() + "님과 친구 관계가 아닙니다.");
         return ResponseEntity.status(HttpStatus.OK).body(friendReq.getId() + "님을 친구 목록에서 삭제했습니다.");
