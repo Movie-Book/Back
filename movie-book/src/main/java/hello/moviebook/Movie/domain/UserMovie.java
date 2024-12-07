@@ -17,8 +17,7 @@ public class UserMovie {
     private Long number;
 
     @Column(name = "rating")
-    private Double rating;
-
+    private Long rating;
     @ManyToOne
     @JoinColumn(name = "user_number")
     private User user;
@@ -27,7 +26,7 @@ public class UserMovie {
     @JoinColumn(name = "movie_number")
     private Movie movie;
 
-    public UserMovie(User user, Movie movie, Double rating) {
+    public UserMovie(User user, Movie movie, Long rating) {
         this.user = user;
         this.movie = movie;
         this.rating = rating;

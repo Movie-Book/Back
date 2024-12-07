@@ -15,7 +15,7 @@ public class UserMovieRes {
     private Long movieId;
     private String movieName;
     private String poster;
-    private Double rating;
+    private Long rating;
 
     public static UserMovieRes defaultBuilder(UserMovie userMovie, Movie movie) {
         return UserMovieRes.builder()

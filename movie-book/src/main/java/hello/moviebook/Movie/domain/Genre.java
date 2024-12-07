@@ -15,6 +15,8 @@ public class Genre {
     private Long number;
     @Column(name = "name")
     private String name;
+    @Column(name = "name_en")
+    private String nameEn;
 
     @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
     private List<UserDislikeGenre> userDislikeGenreList;

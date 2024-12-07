@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public class MovieRatingReq {
     private Long movieId;
-    private Double rating;
+    private Long rating;
 }
