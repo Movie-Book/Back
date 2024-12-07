@@ -18,7 +18,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/v1/book")
 @RequiredArgsConstructor
-public class BookControllerImpl {
+public class BookControllerImpl implements BookController{
     private final BookService bookService;
     private final UserRepository userRepository;
 
