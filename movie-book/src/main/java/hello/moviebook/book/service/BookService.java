@@ -6,6 +6,7 @@ import hello.moviebook.book.dto.FlaskReqDTO;
 import hello.moviebook.book.dto.RecommendBookRes;
 import hello.moviebook.book.repository.BookRepository;
 import hello.moviebook.book.repository.BookSpecifications;
+import hello.moviebook.movie.domain.Movie;
 import hello.moviebook.movie.domain.UserLikeGenre;
 import hello.moviebook.movie.domain.UserMovie;
 import hello.moviebook.movie.repository.UserDislikeGenreRepository;
@@ -141,16 +142,24 @@ public class BookService {
 
     private FlaskReqDTO createFlaskReq(User user) {
         Long nBooks = 10L;
+        Long topNMovie = 3L;
+
         List<String> userLikeGenres = userLikeGenreRepository.findAllByUser(user).stream()
                 .map(userLikeGenre -> userLikeGenre.getGenre().getNameEn())
                 .toList();
         List<String> userDislikeGenres = userDislikeGenreRepository.findAllByUser(user).stream()
                 .map(userDislikeGenre -> userDislikeGenre.getGenre().getNameEn())
                 .toList();
-        List<Long> movieList = userMovieRepository.findAllByUser(user).stream()
-                .map(userMovie -> userMovie.getMovie().getMovieId())
+        List<UserMovie> userMovieList = userMovieRepository.findAllByUser(user).stream()
+                .filter(userMovie -> userMovie.getRating() >= 4L)
+                .sorted((u1, u2) -> Double.compare(u2.getRating(), u1.getRating()))
+                .limit(topNMovie)
                 .toList();
-        List<Long> ratingList = userMovieRepository.findAllByUser(user).stream()
+        List<Long> movieList = userMovieList.stream()
+                .map(UserMovie::getMovie)
+                .map(Movie::getMovieId)
+                .toList();
+        List<Long> ratingList = userMovieList.stream()
                 .map(UserMovie::getRating)
                 .toList();
 
