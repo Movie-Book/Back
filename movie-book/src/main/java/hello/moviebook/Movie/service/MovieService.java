@@ -96,10 +96,10 @@ public class MovieService {
         return userMovieResList;
     }
 
-    private Double getMovieRating(Movie movie, List<UserMovie> userMovieList) {
+    private Long getMovieRating(Movie movie, List<UserMovie> userMovieList) {
         return userMovieList.stream()
                 .filter(usermovie -> usermovie.getMovie().equals(movie))
                 .map(UserMovie::getRating)
-                .findFirst().orElse(0.0);
+                .findFirst().orElse(0L);
     }
 }
