@@ -107,9 +107,7 @@ public class UserService {
     public void logout(HttpServletRequest request, String id) {
         // 토큰 정보
         String accessToken = jwtService.resolveAccessToken(request);
-        String refreshToken = jwtService.resolveRefreshToken(id);
-
-        log.info("refreshToken : {}", refreshToken);
+        String refreshToken = jwtService.resolveRefreshToken(accessToken);
 
         // 토큰 만료 기한
         Date accessExpiration = jwtService.parseClaims(accessToken).getExpiration();
