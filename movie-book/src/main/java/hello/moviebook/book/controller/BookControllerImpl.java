@@ -1,6 +1,8 @@
 package hello.moviebook.book.controller;
 
+import hello.moviebook.book.dto.BookDTO;
 import hello.moviebook.book.dto.BookDescriptRes;
+import hello.moviebook.book.dto.RatingBookReq;
 import hello.moviebook.book.dto.RecommendBookRes;
 import hello.moviebook.book.service.BookService;
 import hello.moviebook.user.repository.UserRepository;
@@ -9,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,5 +44,26 @@ public class BookControllerImpl implements BookController{
         if (recBookList == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         return ResponseEntity.status(HttpStatus.OK).body(recBookList);
+    }
+
+    @GetMapping("/rec-list")
+    public ResponseEntity<List<BookDTO>> getUserBookList(Authentication authentication) {
+        if (authentication == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+
+        List<BookDTO> bookDTOList = bookService.getUserBookList(userRepository.findUserById(authentication.getName()));
+        if (bookDTOList == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(bookDTOList);
+    }
+
+    @PatchMapping("/rating")
+    public ResponseEntity<String> ratingBook(@RequestBody RatingBookReq ratingBookReq, Authentication authentication) {
+        if (authentication == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+
+        if (!bookService.ratingBook(userRepository.findUserById(authentication.getName()), ratingBookReq))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 도서의 평가를 실패했습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body("해당 도서의 평가 정보가 저장되었습니다.");
     }
 }

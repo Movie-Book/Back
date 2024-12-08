@@ -14,8 +14,8 @@ public class BookDTO {
     @Schema(description = "책 이미지 URL", example = "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788936438609.jpg")
     private String image;
 
-    @Schema(description = "책 평점", example = "4.5")
-    private Double rating;
+    @Schema(description = "책 평점", example = "4")
+    private Long rating;
 
     @Schema(description = "책 리뷰", example = "흥미진진하고 재밌는 이야기입니다.")
     private String review;
