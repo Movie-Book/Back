@@ -8,6 +8,9 @@ import lombok.Getter;
 @Getter
 @Schema(description = "책 정보 DTO")
 public class BookDTO {
+    @Schema(description = "isbn", example = "9788936438609")
+    private String isbn;
+
     @Schema(description = "책 이름", example = "나인")
     private String name;
 
@@ -23,6 +26,7 @@ public class BookDTO {
 
     @Builder
     public BookDTO(UserBook userBook) {
+        this.isbn = userBook.getBook().getIsbn();
         this.name = userBook.getBook().getBookName();
         this.image = userBook.getBook().getImage();
         this.rating = userBook.getBookRating();
