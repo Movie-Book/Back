@@ -44,6 +44,7 @@ public class MovieService {
     @Transactional
     public String saveUserMovieList(List<MovieRatingReq> movieList, String userId) {
         User user = userRepository.findUserById(userId);
+        List<UserMovie> userMovieList = new ArrayList<>();
 
         for (MovieRatingReq movieReq : movieList) {
             Movie movie = movieRepository.findMovieByMovieId(movieReq.getMovieId());
@@ -53,24 +54,39 @@ public class MovieService {
                 return null;
             }
 
-            UserMovie userMovie = new UserMovie(user, movie, movieReq.getRating());
-            userMovieRepository.save(userMovie);
+            if (userMovieRepository.existsByUserAndMovie(user, movie)) {
+                log.info("이미 존재하는 영화 평가입니다.");
+                return null;
+            }
+
+            userMovieList.add(new UserMovie(user, movie, movieReq.getRating()));
         }
+        userMovieRepository.saveAll(userMovieList);
         return "유저 선호 영화 정보가 저장되었습니다.";
     }
 
 
     @Transactional
-    public void updateMovieRating(String id, List<MovieRatingReq> ratingList) {
+    public boolean updateMovieRating(String id, List<MovieRatingReq> ratingList) {
         User user = userRepository.findUserById(id);
-        for (MovieRatingReq rating : ratingList) {
-            UserMovie movie = userMovieRepository.findByUserAndMovie(user, movieRepository.findMovieByMovieId(rating.getMovieId()));
+        List<UserMovie> userMovieList = new ArrayList<>();
 
-            if (!movie.getRating().equals(rating.getRating())) {
-                movie.setRating(rating.getRating());
-                userMovieRepository.save(movie);
+        for (MovieRatingReq rating : ratingList) {
+            Movie movie = movieRepository.findMovieByMovieId(rating.getMovieId());
+            if (movie == null)
+                return false;
+
+            UserMovie userMovie = userMovieRepository.findByUserAndMovie(user, movie);
+            if (userMovie == null)
+                return false;
+
+            if (!userMovie.getRating().equals(rating.getRating())) {
+                userMovie.setRating(rating.getRating());
+                userMovieList.add(userMovie);
             }
         }
+        userMovieRepository.saveAll(userMovieList);
+        return true;
     }
 
     public List<UserMovieRes> getUserMovieList(String id) {
