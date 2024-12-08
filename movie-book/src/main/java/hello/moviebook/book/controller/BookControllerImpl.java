@@ -1,5 +1,6 @@
 package hello.moviebook.book.controller;
 
+import hello.moviebook.book.dto.BookDTO;
 import hello.moviebook.book.dto.BookDescriptRes;
 import hello.moviebook.book.dto.RecommendBookRes;
 import hello.moviebook.book.service.BookService;
@@ -44,5 +45,16 @@ public class BookControllerImpl implements BookController{
         if (recBookList == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         return ResponseEntity.status(HttpStatus.OK).body(recBookList);
+    }
+
+    @GetMapping("/rec-list")
+    public ResponseEntity<List<BookDTO>> getUserBookList(Authentication authentication) {
+        if (authentication == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+
+        List<BookDTO> bookDTOList = bookService.getUserBookList(userRepository.findUserById(authentication.getName()));
+        if (bookDTOList == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(bookDTOList);
     }
 }
