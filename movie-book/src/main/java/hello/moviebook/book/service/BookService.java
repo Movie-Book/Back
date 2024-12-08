@@ -1,11 +1,13 @@
 package hello.moviebook.book.service;
 
 import hello.moviebook.book.domain.Book;
+import hello.moviebook.book.domain.UserBook;
 import hello.moviebook.book.dto.BookDescriptRes;
 import hello.moviebook.book.dto.FlaskReqDTO;
 import hello.moviebook.book.dto.RecommendBookRes;
 import hello.moviebook.book.repository.BookRepository;
 import hello.moviebook.book.repository.BookSpecifications;
+import hello.moviebook.book.repository.UserBookRepository;
 import hello.moviebook.movie.domain.Movie;
 import hello.moviebook.movie.domain.UserLikeGenre;
 import hello.moviebook.movie.domain.UserMovie;
@@ -37,6 +39,7 @@ public class BookService {
     private final UserRepository userRepository;
     private final UserLikeGenreRepository userLikeGenreRepository;
     private final UserDislikeGenreRepository userDislikeGenreRepository;
+    private final UserBookRepository userBookRepository;
     private final WebClient.Builder webClientBuilder;
     private WebClient webClient;
 
@@ -112,32 +115,12 @@ public class BookService {
     }
 
     public List<RecommendBookRes> getRecommendBookList(User user) {
-        FlaskReqDTO flaskReqDTO = createFlaskReq(user);
-
         // Flask API URL
         String flaskUrl = "/rec-book";
 
-        // 요청 데이터 생성
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("prefer_genre", flaskReqDTO.getUserLikeGenreList());   // 선호 장르
-        requestBody.put("dislike_genre", flaskReqDTO.getUserDislikeGenreList());  // 비선호 장르
-        requestBody.put("movie_index", flaskReqDTO.getMovieList());      // 영화 인덱스
-        requestBody.put("rating", flaskReqDTO.getRatingList());                // 영화 평점
-        requestBody.put("n_books", flaskReqDTO.getNBooks());
+        FlaskReqDTO flaskReqDTO = createFlaskReq(user);
 
-        log.info("Movie prefer_genre : {}", flaskReqDTO.getUserLikeGenreList());
-        log.info("Movie dislike_genre : {}", flaskReqDTO.getUserDislikeGenreList());
-        log.info("Movie idx : {}", flaskReqDTO.getMovieList());
-        log.info("Movie rating : {}", flaskReqDTO.getRatingList());
-        log.info("nbooks : {}", flaskReqDTO.getNBooks());
-
-        return createRecBookList(webClient.post()
-                .uri(flaskUrl)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
-                .block());
+        return createRecBookList(callRecBook(user, flaskUrl, createRequestBody(flaskReqDTO)));
     }
 
     private FlaskReqDTO createFlaskReq(User user) {
@@ -167,10 +150,60 @@ public class BookService {
     }
 
     private List<RecommendBookRes> createRecBookList(List<String> recBookList) {
+        if (recBookList == null)
+            return null;
+
         return recBookList.stream()
                 .map(bookRepository::findBookByBookName)
                 .filter(Objects::nonNull)
                 .map(RecommendBookRes::new)
                 .toList();
+    }
+
+    private List<String> callRecBook(User user, String flaskUrl, Map<String, Object> requestBody) {
+        List<String> bookNameList = webClient.post()
+                .uri(flaskUrl)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+                .block();
+
+        if (bookNameList == null)
+            return null;
+
+        saveUserBookList(user, bookNameList);
+
+        return bookNameList;
+    }
+
+    private Map<String, Object> createRequestBody(FlaskReqDTO flaskReqDTO) {
+        // 요청 데이터 생성
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("prefer_genre", flaskReqDTO.getUserLikeGenreList());   // 선호 장르
+        requestBody.put("dislike_genre", flaskReqDTO.getUserDislikeGenreList());  // 비선호 장르
+        requestBody.put("movie_index", flaskReqDTO.getMovieList());      // 영화 인덱스
+        requestBody.put("rating", flaskReqDTO.getRatingList());                // 영화 평점
+        requestBody.put("n_books", flaskReqDTO.getNBooks());
+
+        log.info("Movie prefer_genre : {}", flaskReqDTO.getUserLikeGenreList());
+        log.info("Movie dislike_genre : {}", flaskReqDTO.getUserDislikeGenreList());
+        log.info("Movie idx : {}", flaskReqDTO.getMovieList());
+        log.info("Movie rating : {}", flaskReqDTO.getRatingList());
+        log.info("nbooks : {}", flaskReqDTO.getNBooks());
+
+        return requestBody;
+    }
+
+    private void saveUserBookList(User user, List<String> recBookList) {
+        List<UserBook> userBookList = recBookList.stream()
+                .map(bookRepository::findBookByBookName)
+                .map(book -> UserBook.builder()
+                        .user(user)
+                        .book(book)
+                        .build())
+                .toList();
+
+        userBookRepository.saveAll(userBookList);
     }
 }
