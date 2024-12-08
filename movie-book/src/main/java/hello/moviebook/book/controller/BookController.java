@@ -40,5 +40,11 @@ public interface BookController {
     })
     public ResponseEntity<List<BookDTO>> getUserBookList(Authentication authentication);
 
+    @Operation(summary = "추천 도서 평가 API", description = "추천 도서 평가 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "해당 도서의 평가 정보가 저장되었습니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "잘못된 로그인입니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "해당 도서의 평가를 실패했습니다.", content = @Content(mediaType = "application/json")),
+    })
     public ResponseEntity<String> ratingBook(@RequestBody RatingBookReq ratingBookReq, Authentication authentication);
 }

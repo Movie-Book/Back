@@ -60,7 +60,7 @@ public class BookControllerImpl implements BookController{
     @PatchMapping("/rating")
     public ResponseEntity<String> ratingBook(@RequestBody RatingBookReq ratingBookReq, Authentication authentication) {
         if (authentication == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("잘못된 로그인입니다.");
 
         if (!bookService.ratingBook(userRepository.findUserById(authentication.getName()), ratingBookReq))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 도서의 평가를 실패했습니다.");
