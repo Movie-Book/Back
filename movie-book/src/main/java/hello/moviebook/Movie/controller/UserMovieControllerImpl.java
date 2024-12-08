@@ -41,7 +41,7 @@ public class UserMovieControllerImpl implements UserMovieController {
 
         String result = movieService.saveUserMovieList(movieList, principal.getName());
         if (result == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -55,9 +55,9 @@ public class UserMovieControllerImpl implements UserMovieController {
         if (movieList.isEmpty())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
-        movieService.updateMovieRating(principal.getName(), movieList);
-
-        return ResponseEntity.status(HttpStatus.OK).body("영화 평점을 수정했습니다.");
+        if (movieService.updateMovieRating(principal.getName(), movieList))
+            return ResponseEntity.status(HttpStatus.OK).body("영화 평점을 수정했습니다.");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("영화 평점 수정에 실패했습니다.");
     }
 
     // 유저 관람한 영화 조회 API
