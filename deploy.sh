@@ -16,11 +16,16 @@ fi
 
 # 새로운 JAR 파일의 경로를 설정합니다.
 JAR_PATH="/home/mycapisnavy/cicd/movie-book-0.0.1-SNAPSHOT.jar"
+PROPERTIES_PATH="/home/mycapisnavy/cicd/application.properties"
 echo "JAR Path: $JAR_PATH"
+
+# application.properties 생성
+# echo "$APPLICATION" > $PROPERTIES_PATH
+# echo "application.properties created at $PROPERTIES_PATH"
 
 # JAR 파일에 실행 권한을 부여합니다.
 chmod +x $JAR_PATH
 
 # JAR 파일을 백그라운드에서 실행합니다.
-nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
+nohup java -jar -Dspring.config.location=$PROPERTIES_PATH $JAR_PATH > /home/mycapisnavy/cicd/app.log 2>&1 &
 echo "Deployment successful."
