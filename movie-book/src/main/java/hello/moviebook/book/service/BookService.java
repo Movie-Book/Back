@@ -194,8 +194,15 @@ public class BookService {
     }
 
     private void saveUserBookList(User user, List<String> recBookList) {
+        // 사용자와 관련된 기존 UserBook 데이터 조회
+        List<Book> existingBooks = userBookRepository.findAllByUser(user).stream()
+                .map(UserBook::getBook)
+                .toList();
+
+        // 추천 도서 중 기존 데이터에 없는 책 필터링
         List<UserBook> userBookList = recBookList.stream()
                 .map(bookRepository::findBookByBookName)
+                .filter(book -> !existingBooks.contains(book)) // 기존 데이터에 없는 책만 필터링
                 .map(book -> UserBook.builder()
                         .user(user)
                         .book(book)
