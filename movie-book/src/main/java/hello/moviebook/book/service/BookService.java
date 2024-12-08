@@ -2,10 +2,7 @@ package hello.moviebook.book.service;
 
 import hello.moviebook.book.domain.Book;
 import hello.moviebook.book.domain.UserBook;
-import hello.moviebook.book.dto.BookDTO;
-import hello.moviebook.book.dto.BookDescriptRes;
-import hello.moviebook.book.dto.FlaskReqDTO;
-import hello.moviebook.book.dto.RecommendBookRes;
+import hello.moviebook.book.dto.*;
 import hello.moviebook.book.repository.BookRepository;
 import hello.moviebook.book.repository.BookSpecifications;
 import hello.moviebook.book.repository.UserBookRepository;
@@ -216,5 +213,18 @@ public class BookService {
                         .userBook(userBook)
                         .build())
                 .toList();
+    }
+
+    public boolean ratingBook(User user, RatingBookReq ratingBookReq) {
+        UserBook userBook = userBookRepository.findByUserAndBook(user, bookRepository.findBookByIsbn(ratingBookReq.getIsbn()));
+
+        if (userBook == null)
+            return false;
+
+        userBook.setBookRating(ratingBookReq.getRating());
+        userBook.setBookReview(ratingBookReq.getReview());
+
+        userBookRepository.save(userBook);
+        return true;
     }
 }
