@@ -13,4 +13,5 @@ public interface UserMovieRepository extends JpaRepository<UserMovie, Long> {
     UserMovie findByUserAndMovie(User user, Movie movie);
     List<UserMovie> findByUserAndMovieIn(User user, List<Movie> movies);
     List<UserMovie> findAllByUser(User user);
+    Boolean existsByUserAndMovie(User user, Movie movie);
 }
