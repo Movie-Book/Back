@@ -35,7 +35,7 @@ public class BookControllerImpl implements BookController{
     }
 
     // 사용자 맞춤 추천 도서 리스트
-    @GetMapping("/recommend")
+    @PostMapping("/recommend")
     public ResponseEntity<List<RecommendBookRes>> getRecommendBookList(Authentication authentication) {
         if (authentication == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
