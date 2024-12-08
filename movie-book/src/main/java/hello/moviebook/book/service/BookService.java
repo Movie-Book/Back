@@ -2,6 +2,7 @@ package hello.moviebook.book.service;
 
 import hello.moviebook.book.domain.Book;
 import hello.moviebook.book.domain.UserBook;
+import hello.moviebook.book.dto.BookDTO;
 import hello.moviebook.book.dto.BookDescriptRes;
 import hello.moviebook.book.dto.FlaskReqDTO;
 import hello.moviebook.book.dto.RecommendBookRes;
@@ -205,5 +206,15 @@ public class BookService {
                 .toList();
 
         userBookRepository.saveAll(userBookList);
+    }
+
+    public List<BookDTO> getUserBookList(User user) {
+        List<UserBook> userBookList = userBookRepository.findAllByUser(user);
+
+        return userBookList.stream()
+                .map(userBook -> BookDTO.builder()
+                        .userBook(userBook)
+                        .build())
+                .toList();
     }
 }
