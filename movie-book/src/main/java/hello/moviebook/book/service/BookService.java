@@ -43,7 +43,7 @@ public class BookService {
 
     @PostConstruct
     public void init() {
-        this.webClient = webClientBuilder.baseUrl("http://35.216.42.151:5000").build();
+        this.webClient = webClientBuilder.baseUrl("http://35.216.88.189:5000").build();
     }
 
     @PersistenceContext  // EntityManager 주입
