@@ -5,6 +5,7 @@ import hello.moviebook.book.dto.BookDescriptRes;
 import hello.moviebook.book.dto.RatingBookReq;
 import hello.moviebook.book.dto.RecommendBookRes;
 import hello.moviebook.book.service.BookService;
+import hello.moviebook.book.service.UserBookService;
 import hello.moviebook.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookControllerImpl implements BookController{
     private final BookService bookService;
+    private final UserBookService userBookService;
     private final UserRepository userRepository;
 
     // 줄거리 키워드 기반 도서 검색
@@ -51,7 +53,7 @@ public class BookControllerImpl implements BookController{
         if (authentication == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 
-        List<BookDTO> bookDTOList = bookService.getUserBookList(userRepository.findUserById(authentication.getName()));
+        List<BookDTO> bookDTOList = userBookService.getUserBookList(userRepository.findUserById(authentication.getName()));
         if (bookDTOList == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         return ResponseEntity.status(HttpStatus.OK).body(bookDTOList);
@@ -62,7 +64,7 @@ public class BookControllerImpl implements BookController{
         if (authentication == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("잘못된 로그인입니다.");
 
-        if (!bookService.ratingBook(userRepository.findUserById(authentication.getName()), ratingBookReq))
+        if (!userBookService.ratingBook(userRepository.findUserById(authentication.getName()), ratingBookReq))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 도서의 평가를 실패했습니다.");
         return ResponseEntity.status(HttpStatus.OK).body("해당 도서의 평가 정보가 저장되었습니다.");
     }
